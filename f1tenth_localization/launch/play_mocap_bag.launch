@@ -1,0 +1,16 @@
+<!-- plays data from MoCap and adds artificial noise. Used for testing ekf_localization_node -->
+
+<launch>
+	<!-- set the name of the mocap source (for the mocap_to_x nodes) -->
+	<param name="mocap_name" value="F1Tenth"/>
+	
+	<!-- publish gathered MoCap data -->
+	<node pkg="rosbag" type="play" name="qualisys" args="--clock $(find f1tenth_localization)/bag/mocap_bag1.bag">
+		<!-- <remap from="/imu" to="/imu/measurements"/> -->
+	</node>	
+
+	<!-- simulate noisy measurements -->
+	<node pkg="f1tenth_localization" type="mocap_to_imu.py" name="imu"/>
+	<node pkg="f1tenth_localization" type="mocap_to_odom.py" name="odom"/>
+	<node pkg="f1tenth_localization" type="odometry_noise.py" name="noise"/>
+</launch>

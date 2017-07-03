@@ -1,0 +1,6 @@
+<!-- gets data from bag file and echoes it --> 
+
+
+<launch>
+  <node pkg="rosbag" type="play" name="player" output="screen" args="~/bagfiles/gps_stream_1.bag"/>
+  

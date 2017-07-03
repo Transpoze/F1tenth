@@ -1,0 +1,12 @@
+import numpy as np
+import serial
+import os
+
+# for printing serial data from reach to terminal for logging
+
+port = '/dev/ttyACM0'
+ser = serial.Serial(port=port, baudrate=115200, timeout=1)
+
+while True:
+	line = ser.readline()
+	print line

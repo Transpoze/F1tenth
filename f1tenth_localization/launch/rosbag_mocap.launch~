@@ -1,0 +1,10 @@
+
+<launch>	
+	
+	<node pkg="rosbag" type="play" name="qualisys_bag" args="--clock /home/linus/bagfiles/mocap_bag1.bag"/>	
+
+	<node pkg="get_gps" type="mocap_to_odom.py" name="converter"/>
+
+	<node pkg="rviz" type="rviz" name="rviz" args="-d /home/linus/.rviz/qualisys.rviz"/>
+
+</launch>

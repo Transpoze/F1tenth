@@ -1,0 +1,8 @@
+<!-- gets data from bag file and echoes it --> 
+
+
+<launch>
+  <node pkg="rosbag" type="play" name="rosbag" args="/home/linus/bagfiles/gps_stream_1.bag" />
+  <node pkg="rostopic" type="rostopic" name="listener" args="echo /gps_stream" />
+  
+</launch>
