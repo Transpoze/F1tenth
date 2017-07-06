@@ -11,8 +11,7 @@ def mocap_to_odom(mocap):
 	odom = Odometry()
 	
 	odom.header = mocap.header
-	odom.header.stamp = rospy.get_rostime()
-	odom.header.frame_id = "map"
+	odom.header.frame_id = "qualisys"
 	
 	odom.pose.pose.position = mocap.position
 	odom.pose.pose.orientation = mocap.orientation

@@ -1,0 +1,37 @@
+<!-- State estimation based on noisy MoCap data  -->
+
+<launch>    
+    <!-- load parameters -->
+    <rosparam command="load" file="$(find get_gps)/params/rosbag_mocap_realimu.yaml"/>
+    
+    <!--  make sure all nodes subscribe to /clock (required for simulated data) -->
+    <!-- <param name="/use_sim_time" value="true"/> -->
+    
+	<!-- set the name of the mocap source (for the mocap_to_x nodes) -->
+	<param name="mocap_name" value="F1Tenth"/>
+	
+	<!-- launch MoCap -->
+	<include file="$(find qualisys)/launch/qualisys.launch" />
+
+	<!-- simulate noisy measurements -->
+	<node pkg="f1tenth_localization" type="mocap_to_odom.py" name="odom"/>
+	<node pkg="f1tenth_localization" type="odometry_noise.py" name="noise"/>
+	<node pkg="f1tenth_localization" type="set_timestamps.py" name="timestamp_node"/>
+	<node pkg="f1tenth_localization" type="imu_to_odom.py" name="imu_to_odom"/>
+
+    <!-- start rviz with config file --> 
+    <node pkg="rviz" type="rviz" name="rviz" args="-d /home/linus/.rviz/qualisys.rviz"/>
+    
+    <!-- define transforms betweem the standard frames --> 
+    <!-- <node pkg="tf" type="static_transform_publisher" name="map_frame" args="0 0 0 0 0 0 qualisys map 100" />
+    <node pkg="tf" type="static_transform_publisher" name="world_frame" args="0 0 0 0 0 0 qualisys odom 100" />
+    <node pkg="tf" type="static_transform_publisher" name="Imu_frame" args="0 0 0 0 0 3.1415/2 base_link base_imu_link 100" />
+	 -->
+	 
+	 <node pkg="tf" type="static_transform_publisher" name="Imu_frame" args="0 0 0 
+ 	0 0 0 qualisys base_imu_link 100"/>
+	
+    <!-- start and configure the ekf_localization node --> 
+    <node pkg="robot_localization" type="ekf_localization_node" name="mocap_ekf"/>
+
+</launch>
