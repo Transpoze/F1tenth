@@ -1,0 +1,30 @@
+// How to calibrate? Read the tutorial at http://dev.qu.tu-berlin.de/projects/sf-razor-9dof-ahrs
+// Put MIN/MAX and OFFSET readings for your board here!
+// "accel x,y,z (min/max) = X_MIN/X_MAX  Y_MIN/Y_MAX  Z_MIN/Z_MAX"
+float ACCEL_X_MIN = -277.0;
+float ACCEL_X_MAX = 248.0;
+float ACCEL_Y_MIN = -262.0;
+float ACCEL_Y_MAX = 276.0;
+float ACCEL_Z_MIN = -273.0;
+float ACCEL_Z_MAX = 267.0;
+
+// Magnetometer (standard calibration mode)
+// "magn x,y,z (min/max) = X_MIN/X_MAX  Y_MIN/Y_MAX  Z_MIN/Z_MAX"
+float MAGN_X_MIN = -359.0;
+float MAGN_X_MAX = 576.0;
+float MAGN_Y_MIN = -389.0;
+float MAGN_Y_MAX = 446.0;
+float MAGN_Z_MIN = -432.0;
+float MAGN_Z_MAX = 512.0;
+
+// Magnetometer (extended calibration mode)
+// Set to true to use extended magnetometer calibration (compensates hard & soft iron errors)
+boolean CALIBRATION__MAGN_USE_EXTENDED = true;
+float magn_ellipsoid_center[3] = {48.8432, 77.1484, -200.166};
+float magn_ellipsoid_transform[3][3] = {{0.833106, 0.0415529, -0.0360410}, {0.0415529, 0.987018, 0.0281868}, {0.0415529, 0.987018, 0.0281868}};
+
+// Gyroscope
+// "gyro x,y,z (current/average) = .../OFFSET_X  .../OFFSET_Y  .../OFFSET_Z
+float GYRO_AVERAGE_OFFSET_X = -71.0;
+float GYRO_AVERAGE_OFFSET_Y = -58.97;
+float GYRO_AVERAGE_OFFSET_Z = -99.23;

@@ -23,13 +23,13 @@ def filter(odom):
 	counter += 1
 
 def add_position_noise(pose):
-	eps = 0.1
+	eps = 0.5
 	pose.pose.position.x += eps * np.random.normal() 
 	pose.pose.position.y += eps * np.random.normal() 
 	
-	pose.covariance = [100*eps**2, 0, 0, 0, 0, 0,
-						0, 100*eps**2, 0, 0, 0, 0,
-						0, 0, 100*eps**2, 0, 0, 0,
+	pose.covariance = [10*eps**2, 0, 0, 0, 0, 0,
+						0, 10*eps**2, 0, 0, 0, 0,
+						0, 0, 10*eps**2, 0, 0, 0,
 						0, 0, 0, 0, 0, 0,
 						0, 0, 0, 0, 0, 0,
 						0, 0, 0, 0, 0, 0]

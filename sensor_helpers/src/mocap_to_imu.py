@@ -18,7 +18,7 @@ def mocap_to_odom(mocap):
 
 
 rospy.init_node("MoCap_to_Imu")
-mocap_name = rospy.get_param("/mocap_name")
+mocap_name = rospy.get_param("/mocap_name","F1Tenth")
 rospy.Subscriber("qualisys/" + mocap_name, Subject, mocap_to_odom)
 pub = rospy.Publisher("imu/measurements", Imu, queue_size=10)
 

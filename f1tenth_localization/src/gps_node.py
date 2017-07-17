@@ -1,7 +1,4 @@
 #! /usr/bin/env python
-# Reads gps-data from Emlid Reach unit ad publishes two topics:
-# 1) standard sensor_msgs/NavSatFix message
-# 2) custom gps_reach message in the NMEA format (see http://www.rtklib.com/prog/manual_2.4.2.pdf page 102)
 
 import rospy
 import rospkg
@@ -14,27 +11,28 @@ from sensor_msgs.msg import NavSatFix
 def receiver():
 	try:
 		port = '/dev/ttyACM0'
-		ser = serial.Serial(port=port, baudrate=115200, timeout=1)
+		ser = serial.Serial(port=port, baudrate=115200, timeout=10)
 		wait = False
+		rospy.loginfo('Connected to port ' + port)
 	except serial.serialutil.SerialException:
 		# load text file with dummy data for testing
-		print 'port not found, sending dummy data...'
+		rospy.loginfo('Error connecting to port ' + port + ', sending dummy data...')
 		wait = True		
 		ser = open(rospkg.RosPack().get_path('get_gps')+'/params/gpslog2.txt')
 	
-	rospy.init_node('gps_receiver', anonymous=True)
-	rate = rospy.Rate(10)	
-
-	pub_reach = rospy.Publisher('gps_reach', gps_reach, queue_size=10)
-	pub_navsat = rospy.Publisher('gps_navsat', NavSatFix, queue_size=10)
+	pub_reach = rospy.Publisher('gps/reach', gps_reach, queue_size=10)
+	pub_navsat = rospy.Publisher('gps/navsat', NavSatFix, queue_size=10)
 
 	solution_types = ['fixed', 'float', 'reserved', 'DGPS', 'single']
 	
 	gps = gps_reach()
 	navsat = NavSatFix()
+	navsat.header.frame_id = "base_link"
 	while not rospy.is_shutdown():
 		line = ser.readline()		
 		words = line.split()
+		
+		print line
 		
 		if len(words) == 15:
 			gps.date = words[0]
@@ -51,12 +49,12 @@ def receiver():
 			gps.solution = solution_types[int(words[5])-1] 
 			gps.num_satelites = int(words[6])
 			
-			gps.stn = float(words[7])
-			gps.ste = float(words[8])
-			gps.stu = float(words[9])
-			gps.stne = float(words[9])
-			gps.steu = float(words[10])
-			gps.stun = float(words[11])
+			gps.stn = 1e-3 * float(words[7])
+			gps.ste = 1e-3 * float(words[8])
+			gps.stu = 1e-3 * float(words[9])
+			gps.stne = 1e-3 * float(words[9])
+			gps.steu = 1e-3 * float(words[10])
+			gps.stun = 1e-3 * float(words[11])
 
 			navsat.position_covariance = [gps.stn,  gps.stne, gps.stun,
 				 gps.stne, gps.ste,  gps.steu,
@@ -64,11 +62,21 @@ def receiver():
 			
 			gps.age = float(words[12])
 			gps.ratio = float(words[13])
-
-		pub_reach.publish(gps)
-		pub_navsat.publish(navsat)
-		
+			
+			navsat.header.stamp = rospy.get_rostime()
+			pub_reach.publish(gps)
+			pub_navsat.publish(navsat)
+		else:
+			navsat.header.stamp = rospy.get_rostime()
+			pub_navsat.publish(navsat)
+					
+		# wait if reading from text file
 		if wait:
 			rate.sleep()
 
+
+rospy.init_node('gps_receiver', anonymous=True)
+rate = rospy.Rate(10)	
+
 receiver()
+

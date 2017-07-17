@@ -10,7 +10,7 @@ def imu_to_odom(imu):
 
 	odom = Odometry()
 	odom.header = imu.header
-	# imu.header.frame_id = "F1Tenth"
+	imu.header.frame_id = "imu_visualization"
 	odom.pose.pose.orientation = imu.orientation
 	
 	pub.publish(odom) 

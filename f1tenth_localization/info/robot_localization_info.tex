@@ -1,0 +1,76 @@
+\documentclass[a4paper]{article}
+\usepackage{graphicx} 
+\usepackage{amsmath} 
+\usepackage{amsfonts}
+\usepackage{cleveref}
+\addtolength{\topmargin}{-20mm}
+\addtolength{\textheight}{20mm}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[]{algorithm2e}
+\usepackage[obeyspaces]{url}
+
+\newcommand \eq[1]{\begin{equation}\begin{aligned}#1 \end{aligned}\end{equation}}
+
+\begin{document}
+\title{Robot localization description}
+\author {Linus Härenstam-Nielsen}
+\maketitle
+
+
+\subsection*{EKF-node}
+The \texttt{ekf\_localization\_node} implements the following algorithm:
+\begin{enumerate}
+	\item wait for new measurements
+	\item \textbf{predict} next state and error covariance using a second order omnidirectional model 
+	\item \textbf{correct} the prediction using measurements and update the error covariance
+	\item go to step 1.
+\end{enumerate}
+
+\subsubsection*{Prediction step}
+When using \path{ekf_localization_node} in 2D-mode the next state $\tilde{s}_{t+1}$ is predicted from the current state estimate $s_t$ using a second order omnidirectional model:
+
+\eq{
+\label{eqn:state_transition}
+\begin{bmatrix}
+x\\y\\\dot{x}\\\dot{y}\\\ddot{x}\\\ddot{y}\\\varphi\\\dot{\varphi}
+\end{bmatrix}_{t+1} = 
+\begin{bmatrix}
+		1 & 0 & \delta\cos\varphi & -\delta\sin\varphi & -\frac{1}{2}\delta^2\cos\varphi & -\frac{1}{2}\delta^2\sin\varphi & 0 & 0
+\\		0 & 1 & \delta\sin\varphi & \delta\cos\varphi & \frac{1}{2}\delta^2\sin\varphi & \frac{1}{2}\delta^2\cos\varphi & 0 & 0
+\\ 		0 & 0 & 1 & 0 & \delta & 0 & 0 & 0
+\\ 		0 & 0 & 0 & 1 & 0 & \delta & 0 & 0
+\\ 		0 & 0 & 0 & 0 & 1 & 0 & 0 & 0
+\\ 		0 & 0 & 0 & 0 & 0 & 1 & 0 & 0
+\\ 		0 & 0 & 0 & 0 & 0 & 0 & 1 & \delta
+\\ 		0 & 0 & 0 & 0 & 0 & 0 & 0 & 1
+\end{bmatrix}
+\begin{bmatrix}
+x\\y\\\dot{x}\\\dot{y}\\\ddot{x}\\\ddot{y}\\\varphi\\\dot{\varphi}
+\end{bmatrix}_{t}.
+}
+Where $\delta$ is the total time since the last measurement. See \path{robot_localization/src/predict.cpp} for complete function. Note that (\ref{eqn:state_transition}) is a non-linear system since the state transition matrix depends on $\varphi$.
+\newline 
+
+\noindent The estimation error covariance matrix is updated according to:
+\eq{
+	\tilde P_{t+1} = JPJ^T + \delta Q
+}
+where $J$ is the Jacobian of the motion model and $Q$ is the process noise covariance (which must be hand tuned).
+
+\subsubsection*{Correction step}
+The complete state estimate is corrected using the measurements according to:
+\eq{
+	s_{t+1} = \tilde{s}_{t+1} + K(m - H\tilde{s}_{t+1})
+}
+were $m$ is the measurement vector, $H$ is the measurement matrix and $K$ is the Kalman gain given by:
+\eq{
+	K = \tilde P_{t+1}H^T(H\tilde P_{t+1}+H^T+R)^{-1}.
+}
+The estimation error covariance matrix is updated according to:
+\eq{
+	P_{t+1} = (I - KH)\tilde P_{t+1}(I-KH)^T + KRK^T.
+}
+
+
+\end{document}

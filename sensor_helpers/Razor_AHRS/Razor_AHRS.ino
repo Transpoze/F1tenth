@@ -229,28 +229,27 @@ boolean output_errors = false;  // true or false
 // How to calibrate? Read the tutorial at http://dev.qu.tu-berlin.de/projects/sf-razor-9dof-ahrs
 // Put MIN/MAX and OFFSET readings for your board here!
 // "accel x,y,z (min/max) = X_MIN/X_MAX  Y_MIN/Y_MAX  Z_MIN/Z_MAX"
-float ACCEL_X_MIN = -277.0;
-float ACCEL_X_MAX = 248.0;
-float ACCEL_Y_MIN = -262.0;
-float ACCEL_Y_MAX = 276.0;
-float ACCEL_Z_MIN = -273.0;
-float ACCEL_Z_MAX = 267.0;
+float ACCEL_X_MIN = -263.0;
+float ACCEL_X_MAX = 243.0;
+float ACCEL_Y_MIN = -250.0;
+float ACCEL_Y_MAX = 254.0;
+float ACCEL_Z_MIN = -271.0;
+float ACCEL_Z_MAX = 237.0;
 
 // Magnetometer (standard calibration mode)
 // "magn x,y,z (min/max) = X_MIN/X_MAX  Y_MIN/Y_MAX  Z_MIN/Z_MAX"
-float MAGN_X_MIN = -230.0;
-float MAGN_X_MAX = 448.0;
-float MAGN_Y_MIN = -260.0;
-float MAGN_Y_MAX = 347.0;
-float MAGN_Z_MIN = -187.0;
-float MAGN_Z_MAX = 249.0;
+float MAGN_X_MIN = -359.0;
+float MAGN_X_MAX = 576.0;
+float MAGN_Y_MIN = -389.0;
+float MAGN_Y_MAX = 446.0;
+float MAGN_Z_MIN = -432.0;
+float MAGN_Z_MAX = 512.0;
 
 // Magnetometer (extended calibration mode)
 // Set to true to use extended magnetometer calibration (compensates hard & soft iron errors)
-boolean CALIBRATION__MAGN_USE_EXTENDED = false;
-float magn_ellipsoid_center[3] = {0, 0, 0};
-float magn_ellipsoid_transform[3][3] = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
-
+boolean CALIBRATION__MAGN_USE_EXTENDED = true;
+float magn_ellipsoid_center[3] = {85.2757, 35.8999, -67.3156};
+float magn_ellipsoid_transform[3][3] = {{0.776766, 0.0275623, -0.0258421}, {0.0275623, 0.846131, 0.0307778}, {-0.0258421, 0.0307778, 0.991950}};
 // Gyroscope
 // "gyro x,y,z (current/average) = .../OFFSET_X  .../OFFSET_Y  .../OFFSET_Z
 float GYRO_AVERAGE_OFFSET_X = -71.0;
