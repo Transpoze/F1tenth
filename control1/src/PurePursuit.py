@@ -120,7 +120,7 @@ def callback2(state):
         dx = ref_state[0] - x
         dy = ref_state[1] - y
         yaw_vector=[np.cos(yaw),np.sin(yaw)]
-        lk_vector=[wpt_interpolated_x[k+Look_ahead_points]-x,wpt_interpolated_y[k+Look_ahead_points]-y]
+       # lk_vector=[wpt_interpolated_x[k+Look_ahead_points]-x,wpt_interpolated_y[k+Look_ahead_points]-y]
         dot_product=yaw_vector[0]*lk_vector[0]+yaw_vector[1]*lk_vector[1]
         
         
@@ -146,7 +146,7 @@ def callback2(state):
         #gamma=2*x_goal/distance_to_goal **2
         #yaw_rate_req=gamma*velocity_req
         if detection==1:
-          velocity_req=-8
+          velocity_req=0
 
         #if (k==len(wpt_interpolated_x)-1 and distance_to_goal<2):
          # velocity_req=0
