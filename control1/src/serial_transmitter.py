@@ -40,10 +40,15 @@ def callback(data):
         # Do the computation
         pwm1 = arduino_map(velocity,-100,100,6554,13108);
         pwm2 = arduino_map(angle,-np.pi/3,np.pi/3,13108,6554);
-
         msg = input_drive()
-        msg.pwm_drive =pwm1
-        msg.pwm_angle =pwm2
+        if not stop:
+          msg.pwm_drive =pwm1
+          msg.pwm_angle =pwm2
+        else:
+           msg.pwm_drive =9831
+           msg.pwm_angle =9831
+
+
         #rospy.loginfo(msg)
         pub.publish(msg)
    
@@ -53,18 +58,18 @@ def call(sk):
     stop=sk
     #print(stop)
     if stop:
-         while not rospy.is_shutdown():
+         
           print(stop)
 
           msg = input_drive()
-          msg.pwm_drive =0
-          msg.pwm_angle =0
+          msg.pwm_drive =9831
+          msg.pwm_angle =9831
           rospy.loginfo(msg)
           pub.publish(msg)
           flag=1
           
 
-       # rospy.on_shutdown(myhook)
+
 
 
 #-------------------------------------------------------------------------------
@@ -76,7 +81,7 @@ def talker():
 
     #em_pub.publish(False)
     rospy.Subscriber("drive_parameters_topic", input_model, callback)
-    rospy.Subscriber("eStop",Bool,call)
+    rospy.Subscriber("eStoper",Bool,call)
     
 
     rospy.spin()

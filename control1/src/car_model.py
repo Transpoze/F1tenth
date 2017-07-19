@@ -28,8 +28,8 @@ def car():
 		elif steering_angle < -np.pi/3:
 			steering_angle=-np.pi/3
 
-		if ((v>-11.3)and(v<11.3)):
-		 	v=0
+		# if ((v>-11.3)and(v<11.3)):
+		#  	v=0
 
 		if v > 100:
 			v=100
@@ -57,7 +57,6 @@ def init():
 	rospy.Subscriber('drive_parameters_topic',input_model, callback)
 	rate = rospy.Rate(10)
 	while not rospy.is_shutdown():
-			#print('hi')
 			car()
 			now=rospy.get_rostime()
 			msg=Odometry()

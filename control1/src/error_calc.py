@@ -40,7 +40,7 @@ def callback2(state):
          #x=state.position.x
          #y=state.position.y
          #yaw=state.orientation.w
-         # t=state.header.stamp.secs + state.header.stamp.nsecs*1e-9
+         #t=state.header.stamp.secs + state.header.stamp.nsecs*1e-9
          print(repr(x))
          if prev_x == None:
            delta_x = 0
@@ -80,6 +80,6 @@ if __name__ == '__main__':
     rospy.init_node('error_calculation_node', anonymous=True)
     print("error_calculation_node")
     rospy.Subscriber("trajectory_request",out_pursuit,callback1)
-   # rospy.Subscriber("qualisys/F1Tenth",Subject,callback2)
+    #rospy.Subscriber("qualisys/F1Tenth",Subject,callback2)
     rospy.Subscriber("car_state_topic",Odometry , callback2)
     rospy.spin()

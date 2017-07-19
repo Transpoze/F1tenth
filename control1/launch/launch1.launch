@@ -1,15 +1,17 @@
 <launch>      
-	<!-- include file="$(find qualysis)/launch/qualisys.launch" -->
-        <node name="PurePursuit_node" pkg="control1" type="PurePursuit.py" />
- <node name="kill_switch" pkg="control1" type="kill_switch.py" />
+	<include file="$(find qualysis)/launch/qualisys.launch" />
+    <node name="PurePursuit_node" pkg="control1" type="PurePursuite.py" />
+    <node name="kill_switch" pkg="control1" type="kill_switch.py" />
     
 	<node name="error_calculation" pkg="control1" type="error_calc.py"  />
 
 	<node name="pid_controller_node" pkg="control1" type="pid.py"  />
 	
 	<node name="serial_transmitter_node" pkg="control1" type="serial_transmitter.py" />
+	<node name="plot" pkg="control1" type="plot_test.py" />
 
-       <node name="car_model" pkg="control1" type="car_model.py" />
+
+       <!-- node name="car_model" pkg="control1" type="car_model.py" -->
 
 
 

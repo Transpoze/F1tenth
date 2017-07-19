@@ -10,8 +10,8 @@ from slip_control_communications.msg import input_model
 from slip_control_communications.msg import input_pid
 #yaw-rate parameters
 sim_rate = 10
-kp_y = 0.01
-ki_y = 0.1#0.01
+kp_y=0.01 
+ki_y =1#1#0.001#0.1#0.01
 kd_y = 0.
 prev_yaw_rate_error = None
 integral_error_y = 0.0
@@ -20,8 +20,8 @@ yaw_rate= 0.0
 pub = rospy.Publisher('drive_parameters_topic', input_model, queue_size=10)
 
 #velocity parameters
-kp_v = 0.5
-ki_v = 1#0.01
+kp_v = 0.01#0
+ki_v = 1 #1#0.001#0.01
 kd_v = 0.
 prev_velocity_error = None
 integral_error_v = 0.0
@@ -68,7 +68,7 @@ def control(data):
     
 
     angle =(kp_y*yaw_rate_error + kd_y*delta_error_y*sim_rate + ki_y*integral_error_y/sim_rate)
-   # kd*delta_error*sim_rate
+  
     while angle > np.pi/3:
         angle = np.pi/3
     while angle < -np.pi/3:
@@ -92,7 +92,7 @@ def control(data):
     if abs(velocity_error) < 0.01:
         integral_error_v = 0.
 
-    velocity = (kp_v*velocity_error + kd_v*delta_error_v*sim_rate + ki_v*integral_error_v/sim_rate) #- kd*delta_error*sim_rate
+    velocity =  (kp_v*velocity_error + kd_v*delta_error_v*sim_rate + ki_v*integral_error_v/sim_rate) #- kd*delta_error*sim_rate
 
    
     msg = input_model();

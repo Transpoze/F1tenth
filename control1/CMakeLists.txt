@@ -13,7 +13,6 @@ find_package(catkin REQUIRED COMPONENTS
 slip_control_communications
   sensor_msgs
   std_msgs
-  std_msgs
   message_generation
  geometry_msgs
   tf
@@ -53,11 +52,11 @@ slip_control_communications
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-# add_message_files(
-  #FILES
-  # Message1.msg
-  # Message2.msg
-# )
+add_message_files(
+  FILES
+  Cmd.msg
+ 
+ )
 
 ## Generate services in the 'srv' folder
 # add_service_files(
@@ -74,10 +73,11 @@ slip_control_communications
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   std_msgs  # Or other packages containing msgs
-# )
+generate_messages(
+   DEPENDENCIES
+   std_msgs 
+ # Or other packages containing msgs
+ )
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -118,6 +118,7 @@ catkin_package(
   std_msgs
   geometry_msgs
   slip_control_communications
+  message_runtime 
 #  DEPENDS system_lib
 )
 

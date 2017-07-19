@@ -31,7 +31,7 @@ def callback1():
    # if flag == 1:
 
         yaw_rate=3
-        velocity=5
+        velocity=3
         msg=out_pursuit()
         msg.yaw_rate_req=yaw_rate
         msg.velocity_req=velocity
@@ -42,8 +42,8 @@ def callback2():
         global flag   
    # if flag == 1:
 
-        yaw_rate=-3
-        velocity=5
+        yaw_rate=-0.7
+        velocity=2
         msg=out_pursuit()
         msg.yaw_rate_req=yaw_rate
         msg.velocity_req=velocity
@@ -62,9 +62,9 @@ def WaypointsListener():
     rate=rospy.Rate(10)
     
 
-    t_end = time.time() +  30
-    while time.time() < t_end:
-      callback1()
+    # t_end = time.time() +  30
+    # while time.time() < t_end:
+    #   callback1()
 
     while not rospy.is_shutdown():
       callback2()

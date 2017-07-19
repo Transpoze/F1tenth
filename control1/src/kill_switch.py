@@ -44,7 +44,7 @@ rospy.init_node('serial_transmitter_node', anonymous=True)
 
 pygame.init()
 pygame.display.set_mode((100,100))
-em_pub = rospy.Publisher('eStop', Bool, queue_size=10)
+em_pub = rospy.Publisher('eStoper', Bool, queue_size=1)
 
 
 while True:
