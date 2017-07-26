@@ -32,51 +32,54 @@ def receiver():
 	navsat.header.frame_id = "base_link"
 	while not rospy.is_shutdown():
 		line = ser.readline()		
-		words = line.split()
 		
-		rospy.loginfo("New data from reach: {}".format(line))
+		if line != '':
+			words = line.split()
 		
-		try:
-			gps.date = words[0]
-			gps.time = words[1]
+			rospy.loginfo("New data from reach: {}".format(line))
+		
+			try:
+				gps.date = words[0]
+				gps.time = words[1]
+				
+				gps.latitude = float(words[2])
+				gps.longitude = float(words[3])
+				gps.height = float(words[4])
+	
+				navsat.latitude = float(words[2])
+				navsat.longitude = float(words[3])
+				navsat.altitude = float(words[4])
+				
+				gps.solution = solution_types[int(words[5])-1] 
+				gps.num_satelites = int(words[6])
+				
+				gps.stn = 1e-3 * float(words[7])
 			
-			gps.latitude = float(words[2])
-			gps.longitude = float(words[3])
-			gps.height = float(words[4])
+				gps.ste = 1e-3 * float(words[8])
+				gps.stu = 1e-3 * float(words[9])
+				gps.stne = 1e-3 * float(words[9])
+				gps.steu = 1e-3 * float(words[10])
+				gps.stun = 1e-3 * float(words[11])
 
-			navsat.latitude = float(words[2])
-			navsat.longitude = float(words[3])
-			navsat.altitude = float(words[4])
-			
-			gps.solution = solution_types[int(words[5])-1] 
-			gps.num_satelites = int(words[6])
-			
-			gps.stn = 1e-3 * float(words[7])
-			gps.ste = 1e-3 * float(words[8])
-			gps.stu = 1e-3 * float(words[9])
-			gps.stne = 1e-3 * float(words[9])
-			gps.steu = 1e-3 * float(words[10])
-			gps.stun = 1e-3 * float(words[11])
-
-			navsat.position_covariance = [gps.stn,  gps.stne, gps.stun,
+				navsat.position_covariance = [gps.stn,  gps.stne, gps.stun,
 				 gps.stne, gps.ste,  gps.steu,
 				 gps.stun, gps.steu, gps.stu]
 			
-			gps.age = float(words[12])
-			gps.ratio = float(words[13])
-			
-			navsat.header.stamp = rospy.get_rostime()
-			pub_reach.publish(gps)
-			pub_navsat.publish(navsat)
+				gps.age = float(words[12])
+				gps.ratio = float(words[13])
+				
+				navsat.header.stamp = rospy.get_rostime()
+				pub_reach.publish(gps)
+				pub_navsat.publish(navsat)
 		
-		except:
-			rospy.loginfo("Error reading GPS data from reach")
-			# navsat.header.stamp = rospy.get_rostime()
-			# pub_navsat.publish(navsat)
+			except:
+				rospy.loginfo("Error reading GPS data from reach")
+				# navsat.header.stamp = rospy.get_rostime()
+				# pub_navsat.publish(navsat)
 					
-		# wait if reading from text file
-		# if wait:
-		# 	rate.sleep()
+				# wait if reading from text file
+				# if wait:
+				# 	rate.sleep()
 
 
 rospy.init_node('gps_receiver', anonymous=True)
