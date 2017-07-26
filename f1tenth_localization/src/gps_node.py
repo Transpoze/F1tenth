@@ -10,15 +10,17 @@ from sensor_msgs.msg import NavSatFix
 
 def receiver():
 	try:
-		port = '/dev/ttyACM0'
+		port = rospy.get_param('~port','/dev/ttyACM1')
 		ser = serial.Serial(port=port, baudrate=115200, timeout=10)
 		wait = False
 		rospy.loginfo('Connected to port ' + port)
-	except serial.serialutil.SerialException:
+	except:
+		raise Exception('Error connecting to port' + port)
+		
 		# load text file with dummy data for testing
-		rospy.loginfo('Error connecting to port ' + port + ', sending dummy data...')
-		wait = True		
-		ser = open(rospkg.RosPack().get_path('get_gps')+'/params/gpslog2.txt')
+		# rospy.loginfo('Error connecting to port ' + port + ', sending dummy data...')
+		# wait = True		
+		# ser = open(rospkg.RosPack().get_path('get_gps')+'/params/gpslog2.txt')
 	
 	pub_reach = rospy.Publisher('gps/reach', gps_reach, queue_size=10)
 	pub_navsat = rospy.Publisher('gps/navsat', NavSatFix, queue_size=10)
@@ -32,9 +34,9 @@ def receiver():
 		line = ser.readline()		
 		words = line.split()
 		
-		print line
+		rospy.loginfo("New data from reach: {}".format(line))
 		
-		if len(words) == 15:
+		try:
 			gps.date = words[0]
 			gps.time = words[1]
 			
@@ -66,13 +68,15 @@ def receiver():
 			navsat.header.stamp = rospy.get_rostime()
 			pub_reach.publish(gps)
 			pub_navsat.publish(navsat)
-		else:
-			navsat.header.stamp = rospy.get_rostime()
-			pub_navsat.publish(navsat)
+		
+		except:
+			rospy.loginfo("Error reading GPS data from reach")
+			# navsat.header.stamp = rospy.get_rostime()
+			# pub_navsat.publish(navsat)
 					
 		# wait if reading from text file
-		if wait:
-			rate.sleep()
+		# if wait:
+		# 	rate.sleep()
 
 
 rospy.init_node('gps_receiver', anonymous=True)
