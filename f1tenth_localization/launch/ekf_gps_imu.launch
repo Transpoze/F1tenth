@@ -118,7 +118,7 @@
   </node>
 
 
-  <node pkg="rviz" type="rviz" name="rviz" args="-d /home/linus/.rviz/imu_and_gps.rviz"/>
+  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find f1tenth_localization)/rviz/imu_and_gps.rviz"/>
   <!-- <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se_odom" clear_params="true"/>
   
   <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se_map" clear_params="true">
