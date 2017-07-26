@@ -137,14 +137,12 @@ ser.write('#o0' + chr(13))
 #ser.flushInput()  #discard old input, still in invalid format
 #flush manually, as above command is not working
 discard = ser.readlines() 
-# ser.reset_input_buffer()
-ser.flush()
 
 #set output mode
 ser.write('#ox' + chr(13)) # To start display angle and sensor reading in text
 
 #print calibration values for verification by user
-ser.reset_input_buffer()
+ser.flushInput()
 ser.write('#p' + chr(13))
 calib_data = ser.readlines()
 calib_data_print = "Printing set calibration values:\r\n"

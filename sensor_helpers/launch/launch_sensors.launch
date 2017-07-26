@@ -6,9 +6,9 @@
 
 
 <launch>
-	<node pkg="sensor_helpers" name="razor_imu.py">
-	<node pkg="f1tenth_localization" name="gps_node.py">
-		<param name="port" value="/dev/ttyACM0"/>
-	</node>
-    <node pkg="rosserial_python" name="serial_node.py" args="/dev/ttyACM1"/>
+    <node pkg="sensor_helpers" type="razor_imu.py" name="razor_imu" output="screen"/>
+    <node pkg="f1tenth_localization" type="gps_node.py" name="gps_reach" output="screen">
+        <param name="port" value="/dev/ttyACM1"/>
+    </node>
+    <node pkg="rosserial_python" type="serial_node.py" name="serial_node" args="/dev/ttyACM0" output="screen"/>
 </launch>
