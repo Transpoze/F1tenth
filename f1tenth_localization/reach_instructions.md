@@ -28,6 +28,16 @@ All configuration of the reach module is done through the [reachView app](https:
 ### Base correction
 For better positioning we subscribe to NTRIP data from Lantmäteriet's SWEPOS service. Use the following settings to connect 
 
-![correction input](http://imgur.com/a/ClUSO)
+![correction input](https://github.com/KTH-SML/SML_summerproject/blob/master/f1tenth_localization/ntripsettings.jpg)
 
 ask Jonas Mårtensson for username/password if necessary.
+
+### Localization quality
+The quality of the gps measurements are heavily dependent on the satellite quality. For centimeter accuracy at least 3 satellites with >40% SNR seems to be required. With lower signal quality it is still usually possible go get fairly accurate relative position measurements, but the estimate might drift significantly (~1 meter drift in one minute is fairly typical in these cases). In these cases it is often necessary to reset the `ekf_localization_node` before running any control algorithms that rely on accurate positioning. 
+
+If the position estimate seems to get stuck in the wrong location it some times help to move the robot around or to cover the antenna for a couple of seconds and then uncover it to reset the estimation. 
+
+We have found the following RTK-settings to work well, but feel free to play around.
+
+![RTK settings](https://github.com/KTH-SML/SML_summerproject/blob/master/f1tenth_localization/rtksettings.jpg)
+
