@@ -22,5 +22,6 @@ The EKF calculations take place in an instance of `ekf_localization_node` that e
 - the velocity is given in the `base_link` frame which is rigidly mounted on the base of the car (i.e. `odom.twist.twist.linear.x` is always forward velocity etc)
 
 
-The `odom->base_link` map is provided by the `ekf_localization_node` and a `utm->odom` transform is provided by the `navsat_transform_node`. For converting latitude/longitude data to utm coordinates you can use the `from_latlon` function from [utm](https://translate.google.se/translate?hl=sv&sl=en&u=https://pypi.python.org/pypi/utm&prev=search).
+The `odom->base_link` map is provided by the `ekf_localization_node` 
 
+Internally, `navsat_transform_node` uses the [utm coordinate system](https://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system) and a `utm->odom` transform is provided by the node. For converting between utm and latitude/lingitude you can use the python-package [utm](https://pypi.python.org/pypi/utm).
