@@ -13,16 +13,14 @@ There are currently two sensors being used for localization:
 - Emlid Reach RTK kit - see [reach instructions](https://github.com/KTH-SML/SML_summerproject/blob/master/f1tenth_localization/reach_instructions.md) for more info
 
 ### Sensor fusion
-The sensor fusion is handeled by the `f1tenth_localization` package.
+Sensor fusion is handeled by the `f1tenth_localization` package. Incomming information from the sensors is fused using an Extended Kalman Filter (EKF) implemented in the ROS-package [robot_localization](http://docs.ros.org/kinetic/api/robot_localization/html/index.html). You can run the filter using `roslaunch f1tenth_localization ekf_gps_imu.launch`.
 
-Incomming information from the sensors is fused using an Extended Kalman Filter (EKF) implemented by the [robot_localization package](http://docs.ros.org/kinetic/api/robot_localization/html/index.html) in ROS. You can run the filter using `roslaunch f1tenth_localization ekf_gps_imu.launch`.
-
-The EKF estimates the state of the car and publishes the information as an [odometry message](http://docs.ros.org/api/nav_msgs/html/msg/Odometry.html) to `/odometry/filtered`. 
+The EKF calculations take place in an instance of `ekf_localization_node` that estimates the state of the car and publishes the information as an [odometry message](http://docs.ros.org/api/nav_msgs/html/msg/Odometry.html) to `/odometry/filtered`. There is also an instance of `navsat_transform_node` that transforms latitude/longitude measurements from the Reach into local coordinates. 
 
 #### Frames
-
-- the position is given in the `odom` frame which has its origin at the starting location of the car 
+- the position is given in the `odom` frame which has its origin at the starting location of the car with the positive x-axis pointing north
 - the velocity is given in the `base_link` frame which is rigidly mounted on the base of the car (i.e. `odom.twist.twist.linear.x` is always forward velocity etc)
-- The `odom->base_link` map is provided by the `ekf_localization_node`
 
-The filtering takes place in an `ekf_localization_node` and a `navsat_transform_node` is used to convert latitude/longitude information to local coordinates. 
+
+The `odom->base_link` map is provided by the `ekf_localization_node` and a `utm->odom` transform is provided by the `navsat_transform_node`. For converting latitude/longitude data to utm coordinates you can use the `from_latlon` function from [utm](https://translate.google.se/translate?hl=sv&sl=en&u=https://pypi.python.org/pypi/utm&prev=search).
+
