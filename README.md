@@ -13,7 +13,7 @@ There are currently two sensors being used for localization:
 - Emlid Reach RTK kit - see [reach instructions](https://github.com/KTH-SML/SML_summerproject/blob/master/f1tenth_localization/reach_instructions.md) for more info
 
 ### Sensor fusion
-Sensor fusion is handeled by the `f1tenth_localization` package. Incomming information from the sensors is fused using an Extended Kalman Filter (EKF) implemented in the ROS-package [robot_localization](http://docs.ros.org/kinetic/api/robot_localization/html/index.html). You can run the filter using `roslaunch f1tenth_localization ekf_gps_imu.launch`.
+Sensor fusion is handeled by the `f1tenth_localization` package. Incomming measurements from the sensors are fused using an Extended Kalman Filter (EKF) implemented in the ROS-package [robot_localization](http://docs.ros.org/kinetic/api/robot_localization/html/index.html). You can run the filter using `roslaunch f1tenth_localization ekf_gps_imu.launch`.
 
 The EKF calculations take place in an instance of `ekf_localization_node` that estimates the state of the car and publishes the information as an [odometry message](http://docs.ros.org/api/nav_msgs/html/msg/Odometry.html) to `/odometry/filtered`. There is also an instance of `navsat_transform_node` that transforms latitude/longitude measurements from the Reach into local coordinates. 
 
