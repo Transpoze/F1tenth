@@ -1,3 +1,5 @@
+# This message holds gps data in the LLH format. See http://www.rtklib.com/prog/manual_2.4.2.pdf page 102 for more info
+
 string date
 string time
 
