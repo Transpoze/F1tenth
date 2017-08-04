@@ -1,4 +1,4 @@
-#! /usr/bin/env python3
+#! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
 # server_gui.py
@@ -96,8 +96,8 @@ from pygame.locals import *
 from math import sqrt
 import numpy as np
 from control1.msg import Cmd
-#from control1.msg import gps_reach
-import os
+from f1tenth_localization.msg import gps_reach
+import tf
 #from mocap_source_2 import Mocap, Body
 #mocap = Mocap(host='Inet-PC', info=1)
 #truck_id = mocap.get_id_from_name("F1tenth_1")
@@ -142,10 +142,10 @@ StockPosition = [[0,0],[0,0]]
 
 '''Convert orientation received from nodes'''
 def constrainAngle(x):
-	return x % 2 * np.pi
+    return x % 2 * np.pi
 
 def convertRad2Deg(x):
-	return(180 * x) / np.pi
+    return(180 * x) / np.pi
 
 
 '''Define the subscriber to the position'''
@@ -165,19 +165,20 @@ def callbackCar_State(msg):
     #rospy.loginfo("recu position x: [%f, %f]" %(state_x, state_y))
 
 
-SubsCar_State = rospy.Subscriber("/GPS/filtered", NavSatFix, callbackCar_State)
+SubsCar_State = rospy.Subscriber("/gps/filtered", NavSatFix, callbackCar_State)
 #SubsCar_State = rospy.Subscriber("/car_state_topic", Odometry, callbackCar_State)
 #SubsCar_State=rospy.Subscriber("qualisys/F1Tenth", Subject, callbackCar_State)
 
-def callbackData(msg):
-	global V
-	vel_x = odom.twist.twist.linear.x
-	vel_y = odom.twist.twist.linear.y
-	V = sqrt((vel_x **2) + (vel_y ** 2))
+def callbackData(odom):
+    global V, ori
+    vel_x = odom.twist.twist.linear.x
+    vel_y = odom.twist.twist.linear.y
+    V = sqrt((vel_x **2) + (vel_y ** 2))
 
-	q = msg.pose.pose.orientation
-	euler = tf.transformation.euler_from_quaternion(q.x, q.y, q.z)
-	ori = euler[2] #ori is the yaw of the car
+    q = odom.pose.pose.orientation
+    euler = tf.transformations.euler_from_quaternion([q.x, q.y, q.z, q.w])
+    ori = (euler[2]*180 / np.pi) #ori is the yaw of the car
+    rospy.loginfo("recu orientation: {}".format(ori ))
 
 
 SubsData=rospy.Subscriber("odometry/filtered", Odometry, callbackData)
@@ -188,7 +189,7 @@ def callbackGPSQuality(msg):
     GPSQuali = msg.solution
     rospy.loginfo("recu GPS string messages [%s]" %(GPSQuali))
 
-#SubsGPSQuality = rospy.Subscriber("/gps_reach", gps_reach, callbackGPSQuality)
+SubsGPSQuality = rospy.Subscriber("/gps/reach", gps_reach, callbackGPSQuality)
 
 '''Define the subscriber to the Obstacle detection'''
 def callbackObst_Detect(msg):
@@ -331,41 +332,41 @@ class Game:
 
 
     def reset(self):
-    	global M
+        global M
         ''' Display the map (KTH or Kista) to erase drawings or pictures. Maps are displayed with a zoom out (self.zoom=1)'''
 
 
-    	KistaMap = pygame.image.load('mapKista.png').convert()
+        KistaMap = pygame.image.load('mapKista.png').convert()
         KTHMap = pygame.image.load('Maskinparken.png').convert()
         if self.map1 == 'KTHE' or self.map1 == 'KTHW' or self.map1 == 'KTHMap' :
-        	pygame.draw.polygon(KTHMap,(0,0,0), ((1000,810),(1008,810),(1008,840), (1012,840),(1012,810),(1020, 810), (1010,800)))
-        	pygame.draw.line(KTHMap, BLACK, [1000-68, 840], [1000, 840], 2)
-        	pygame.draw.line(KTHMap, BLACK, [1000-68, 840], [1000-68, 837], 2)
-        	pygame.draw.line(KTHMap, BLACK, [1000, 840], [1000, 837], 2)
-        	self.screen.blit(KTHMap, (500,0))
-        	pygame.display.update()
-        	self.map1 = 'KTHMap'
+            pygame.draw.polygon(KTHMap,(0,0,0), ((1000,810),(1008,810),(1008,840), (1012,840),(1012,810),(1020, 810), (1010,800)))
+            pygame.draw.line(KTHMap, BLACK, [1000-68, 840], [1000, 840], 2)
+            pygame.draw.line(KTHMap, BLACK, [1000-68, 840], [1000-68, 837], 2)
+            pygame.draw.line(KTHMap, BLACK, [1000, 840], [1000, 837], 2)
+            self.screen.blit(KTHMap, (500,0))
+            pygame.display.update()
+            self.map1 = 'KTHMap'
         elif self.map1 == 'KistaN' or self.map1 == 'KistaS' or self.map1 == 'KistaMap' :
-        	pygame.draw.polygon(KistaMap,(0,0,0), ((1000,810),(1008,810),(1008,840), (1012,840),(1012,810),(1020, 810), (1010,800)))
-        	pygame.draw.line(KistaMap, BLACK, [1000-68, 840], [1000, 840], 2)
-        	pygame.draw.line(KistaMap, BLACK, [1000-68, 840], [1000-68, 837], 2)
-        	pygame.draw.line(KistaMap, BLACK, [1000, 840], [1000, 837], 2)
-        	self.screen.blit(KistaMap, (500,0))
-        	pygame.display.update()
-        	self.map1 = 'KistaMap'
+            pygame.draw.polygon(KistaMap,(0,0,0), ((1000,810),(1008,810),(1008,840), (1012,840),(1012,810),(1020, 810), (1010,800)))
+            pygame.draw.line(KistaMap, BLACK, [1000-68, 840], [1000, 840], 2)
+            pygame.draw.line(KistaMap, BLACK, [1000-68, 840], [1000-68, 837], 2)
+            pygame.draw.line(KistaMap, BLACK, [1000, 840], [1000, 837], 2)
+            self.screen.blit(KistaMap, (500,0))
+            pygame.display.update()
+            self.map1 = 'KistaMap'
         self.zoom = 1
 
 
         ''' Storage chart : empty '''
         M = []
         L = []
-    	print("reset")
+        print("reset")
 
     def Display_KistaMap(self):
         'Action of "Kista" button. Display Kista s map with zoom out'
-    	self.zoom = 1
-    	global Click
-    	Click = True
+        self.zoom = 1
+        global Click
+        Click = True
         KistaMap=pygame.image.load('mapKista.png').convert()
         pygame.draw.polygon(KistaMap,BLACK, ((1000,810),(1008,810),(1008,840), (1012,840),(1012,810),(1020, 810), (1010,800)))
         pygame.draw.polygon(KistaMap,BLACK, ((1030,815),(1032,815),(1032,805), (1030,805),(1027,811),(1027, 811), (1028,807)))
@@ -378,9 +379,9 @@ class Game:
 
     def Display_KTHMap(self):
         'Action of "KTH" button. Display KTH s map with zoom out'
-    	self.zoom = 1
-    	global Click
-    	Click = True
+        self.zoom = 1
+        global Click
+        Click = True
         KTHMap = pygame.image.load('Maskinparken.png').convert()
         KTHMap = pygame.transform.scale(pygame.image.load('mapKTH.png').convert(), (1042,872))
         pygame.draw.polygon(KTHMap,(0,0,0), ((1000,810),(1008,810),(1008,840), (1012,840),(1012,810),(1020, 810), (1010,800)))
@@ -392,9 +393,9 @@ class Game:
         pygame.display.update()
 
     def waypoints_personalized(self):
-    	'''Publishes the waypoints coming stored in M
-    	Assumes that the max number of waypoints is 10. There is an undetermined number of waypoints which are treated with the list Stock '''
-    	'Maskinparken'
+        '''Publishes the waypoints coming stored in M
+        Assumes that the max number of waypoints is 10. There is an undetermined number of waypoints which are treated with the list Stock '''
+        'Maskinparken'
         LongitMin_KTH = 18.06407
         LongitMax_KTH = 18.06744
         LatitMin_KTH = 59.35174
@@ -404,49 +405,49 @@ class Game:
         EchelleLongit_KTH = ((LongitMax_KTH - LongitMin_KTH) / fenetreWidth)
         EchelleLatit_KTH = ((LatitMax_KTH - LatitMin_KTH) / fenetreHeight)
 
-    	'''KistaMap'''
-    	LongitMin_Kista = 17.95024
-    	LongitMax_Kista = 17.95360
-    	LatitMin_Kista = 59.40371
-    	LatitMax_Kista = 59.40515
-    	fenetreWidth = 1042
-    	fenetreHeight = 872
-    	EchelleLongit_Kista = ((LongitMax_Kista - LongitMin_Kista) / fenetreWidth)
-    	EchelleLatit_Kista = ((LatitMax_Kista - LatitMin_Kista) / fenetreHeight)
+        '''KistaMap'''
+        LongitMin_Kista = 17.95024
+        LongitMax_Kista = 17.95360
+        LatitMin_Kista = 59.40371
+        LatitMax_Kista = 59.40515
+        fenetreWidth = 1042
+        fenetreHeight = 872
+        EchelleLongit_Kista = ((LongitMax_Kista - LongitMin_Kista) / fenetreWidth)
+        EchelleLatit_Kista = ((LatitMax_Kista - LatitMin_Kista) / fenetreHeight)
 
-    	N = []
-    	for i in range(len(M)) :
-    		''' Affects latitude and longitude distinguishing the cases '''
-    		if self.map1 == 'KistaMap' or self.map1 == 'KistaS' or self.map1 == 'KistaN' :
-    			L, l = (M[i][0]-500)*EchelleLongit_Kista + LongitMin_Kista, LatitMax_Kista - M[i][1] * EchelleLatit_Kista
-    		
-    		if self.map1 == 'KTHMap' or self.map1 == 'KTHE' or self.map1 == 'KTHW' :
-    			L, l = (M[i][0]-500)*EchelleLongit_KTH + LongitMin_KTH, LatitMax_KTH - M[i][1] * EchelleLatit_KTH
+        N = []
+        for i in range(len(M)) :
+            ''' Affects latitude and longitude distinguishing the cases '''
+            if self.map1 == 'KistaMap' or self.map1 == 'KistaS' or self.map1 == 'KistaN' :
+                L, l = (M[i][0]-500)*EchelleLongit_Kista + LongitMin_Kista, LatitMax_Kista - M[i][1] * EchelleLatit_Kista
+            
+            if self.map1 == 'KTHMap' or self.map1 == 'KTHE' or self.map1 == 'KTHW' :
+                L, l = (M[i][0]-500)*EchelleLongit_KTH + LongitMin_KTH, LatitMax_KTH - M[i][1] * EchelleLatit_KTH
 
-    		N.extend([[L,l]])
+            N.extend([[L,l]])
 
 
-    	print('Waypoints Personalized')
-    	#print(Tableau2)
-    	NbrePoints = len(N)
-    	point1, point2, point3, point4, point5, point6, point7, point8, point9, point10 = Pose(), Pose(), Pose(), Pose(), Pose(), Pose(), Pose(), Pose(), Pose(), Pose()
-    	Array = PoseArray()
-    	Stock = [point1, point2, point3, point4, point5, point6, point7, point8, point9, point10]
+        print('Waypoints Personalized')
+        #print(Tableau2)
+        NbrePoints = len(N)
+        point1, point2, point3, point4, point5, point6, point7, point8, point9, point10 = Pose(), Pose(), Pose(), Pose(), Pose(), Pose(), Pose(), Pose(), Pose(), Pose()
+        Array = PoseArray()
+        Stock = [point1, point2, point3, point4, point5, point6, point7, point8, point9, point10]
 
-    	for i in range (NbrePoints):
-        	Stock[i].position.x, Stock[i].position.y = N[i][0], N[i][1]
+        for i in range (NbrePoints):
+            Stock[i].position.x, Stock[i].position.y = N[i][0], N[i][1]
         
-    	Array.poses.extend((Stock[i]) for i in range(NbrePoints))
-    	Array.header.stamp = rospy.get_rostime()
-    	Array.header.frame_id = 'utm'
+        Array.poses.extend((Stock[i]) for i in range(NbrePoints))
+        Array.header.stamp = rospy.get_rostime()
+        Array.header.frame_id = 'utm'
         
-    	rospy.loginfo(Array)
-    	goalPublisher.publish(Array)
+        rospy.loginfo(Array)
+        goalPublisher.publish(Array)
 
 
         
     def WaypointsZoom(self):
-    	''' Convert the position in pixel of the waypoints stored in M into the position in pixels adapted to the zooms, stored in L '''
+        ''' Convert the position in pixel of the waypoints stored in M into the position in pixels adapted to the zooms, stored in L '''
         global L
         L = []
 
@@ -490,25 +491,24 @@ class Game:
         return L
     
     def waypointsReset(self):
-    	global M
-    	M = []
-    	print(M)
+        global M
+        M = []
+        print(M)
 
 
 
     def infinite_loop(self):
-
-    	'DATA'
-    	'Caracteristics of the map #faire un input'
-    	#'KTHMap triangelparken'
-    	#LongitMin_KTH = 18.06783
-    	#LongitMax_KTH = 18.07120
-    	#LatitMin_KTH = 59.34886
-    	#LatitMax_KTH = 59.35029
-    	#fenetreWidth = 1071
-    	#fenetreHeight = 872
-    	#EchelleLongit_KTH = ((LongitMax_KTH - LongitMin_KTH) / fenetreWidth)
-    	#EchelleLatit_KTH = ((LatitMax_KTH - LatitMin_KTH) / fenetreHeight)
+        'DATA'
+        'Caracteristics of the map #faire un input'
+        #'KTHMap triangelparken'
+        #LongitMin_KTH = 18.06783
+        #LongitMax_KTH = 18.07120
+        #LatitMin_KTH = 59.34886
+        #LatitMax_KTH = 59.35029
+        #fenetreWidth = 1071
+        #fenetreHeight = 872
+        #EchelleLongit_KTH = ((LongitMax_KTH - LongitMin_KTH) / fenetreWidth)
+        #EchelleLatit_KTH = ((LatitMax_KTH - LatitMin_KTH) / fenetreHeight)
 
         'MaskinParken'
         LongitMin_KTH = 18.06407
@@ -520,18 +520,18 @@ class Game:
         EchelleLongit_KTH = ((LongitMax_KTH - LongitMin_KTH) / fenetreWidth)
         EchelleLatit_KTH = ((LatitMax_KTH - LatitMin_KTH) / fenetreHeight)
 
-    	'''KistaMap'''
-    	LongitMin_Kista = 17.95024
-    	LongitMax_Kista = 17.95360
-    	LatitMin_Kista = 59.40371
-    	LatitMax_Kista = 59.40515
-    	fenetreWidth = 1042
-    	fenetreHeight = 872
-    	EchelleLongit_Kista = ((LongitMax_Kista - LongitMin_Kista) / fenetreWidth)
-    	EchelleLatit_Kista = ((LatitMax_Kista - LatitMin_Kista) / fenetreHeight)
+        '''KistaMap'''
+        LongitMin_Kista = 17.95024
+        LongitMax_Kista = 17.95360
+        LatitMin_Kista = 59.40371
+        LatitMax_Kista = 59.40515
+        fenetreWidth = 1042
+        fenetreHeight = 872
+        EchelleLongit_Kista = ((LongitMax_Kista - LongitMin_Kista) / fenetreWidth)
+        EchelleLatit_Kista = ((LatitMax_Kista - LatitMin_Kista) / fenetreHeight)
 
-    	'''187,7 meters = 1042 pixels''' 
-    	EchelleMPix = 187.7 / 1042
+        '''187,7 meters = 1042 pixels''' 
+        EchelleMPix = 187.7 / 1042
 
 
         '''Tool to update the status
@@ -671,18 +671,18 @@ class Game:
                         self.screen.blit(perso, self.position_perso)
 
      
-            			#ZOOM SUD
-            	if event.type == MOUSEBUTTONDOWN and event.button == 4 and event.pos[0] > 500 and event.pos[1] > 436 :
-            		self.zoom = 2
-            		if self.map1 == 'KistaMap' or self.map1 == 'KistaN' :
-            			self.map1 = 'KistaS'
-            			KistaS = pygame.image.load('KistaS.png').convert()
-            			KistaS = pygame.transform.scale(KistaS,(1042,872))
-            			pygame.draw.polygon(KistaS,(0,0,0), ((1000,810),(1008,810),(1008,840), (1012,840),(1012,810),(1020, 810), (1010,800)))
-            			pygame.draw.line(KistaS, BLACK, [1000-68, 840], [1000, 840], 2)
-            			pygame.draw.line(KistaS, BLACK, [1000-68, 840], [1000-68, 837], 2)
-            			pygame.draw.line(KistaS, BLACK, [1000, 840], [1000, 837], 2)
-            			self.screen.blit(KistaS, (500,0))
+                        #ZOOM SUD
+                if event.type == MOUSEBUTTONDOWN and event.button == 4 and event.pos[0] > 500 and event.pos[1] > 436 :
+                    self.zoom = 2
+                    if self.map1 == 'KistaMap' or self.map1 == 'KistaN' :
+                        self.map1 = 'KistaS'
+                        KistaS = pygame.image.load('KistaS.png').convert()
+                        KistaS = pygame.transform.scale(KistaS,(1042,872))
+                        pygame.draw.polygon(KistaS,(0,0,0), ((1000,810),(1008,810),(1008,840), (1012,840),(1012,810),(1020, 810), (1010,800)))
+                        pygame.draw.line(KistaS, BLACK, [1000-68, 840], [1000, 840], 2)
+                        pygame.draw.line(KistaS, BLACK, [1000-68, 840], [1000-68, 837], 2)
+                        pygame.draw.line(KistaS, BLACK, [1000, 840], [1000, 837], 2)
+                        self.screen.blit(KistaS, (500,0))
                         print('My map is here', self.map1)
 
                         if Click == True :
@@ -691,61 +691,35 @@ class Game:
 
 
                 if event.type == MOUSEBUTTONDOWN and event.button == 1 and event.pos[0] > 500 :
-                	''' Waypoints detection : Detect a mouse click on the map and store the position in pixels in the M list '''
-                	global M
-                	if self.zoom == 1:
-                		print('zoom1')
-                		x_mouse, y_mouse = pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1]
-                		M.extend([[x_mouse, y_mouse]])
-                	if self.zoom == 2:
-                		print('zoom2')
-                		a1, b1 = 1042 / 486, -604
-                		c1, d1 = 872 / 404, -28
-                		a2, b2 = 1042 / 341, -2179
-                		c2, d2 = 872 / 283, -1038
-                		a4, b4 = 1042 / 550, -1296
-                		c4, d4 = 872 / 450, -687
-                		a3, b3 = 1042 / 341, -1862
-                		c3, d3 = 872 / 283, -502
-                    	s, t = pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1]
-                    	if self.map1 == 'KTHW' :
-                    		x_mouse, y_mouse = int((s - b1) / a1), int((t - d1) / c1)
-                    		M.extend([[x_mouse, y_mouse]])
-                    	if self.map1 == 'KTHE' :
-                    		x_mouse, y_mouse = int((s - b4) / a4), int((t - d4) / c4)
-                    		M.extend([[x_mouse, y_mouse]])
-                    	if self.map1 == 'KistaS' :
-                    		x_mouse, y_mouse = int((s - b2) / a2), int((t - d2) / c2)
-                    		M.extend([[x_mouse, y_mouse]])
-                    	if self.map1 == 'KistaN' :
-                    		x_mouse, y_mouse = int((s - b3) / a3), int((t - d3) / c3)
-                    		M.extend([[x_mouse, y_mouse]])
-
-                if event.type == MOUSEBUTTONDOWN and event.button == 3 and event.pos[0] > 500 :
-                  	''' To remove waypoints from the M list : detect a click near a waypoint and remove it from the M list '''
-
-                   	x, y = pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1]
-                   	if self.zoom == 1:
-                   		Remove = False
-                   		for i in range(len(M)) :
-                   			                  			
-                   			r2 = ((x - M[i][0]) ** 2) + ((y - M[i][1]) ** 2)
-                   			if r2 <= 25 :
-                   				Remove,a = True, i
-                   		if Remove :
-                   			M.remove([M[a][0], M[a][1]])
-
-                   	if self.zoom == 2:
-                   		Remove = False
-                   		L = self.WaypointsZoom()
-                   		print(L)
-                   		for i in range(len(M)) :
-                   			print(L[i][0], i, len(L), len(L[i]), L)
-                   			r2 = ((x - L[i][0]) ** 2) + ((y - L[i][1]) ** 2)
-                   			if r2 <= 25 :
-                   				Remove, a = True, i
-                   		if Remove :
-                   			M.remove([M[a][0], M[a][1]])
+                    ''' Detect a mouse click on the map and store the position in pixels in the M list '''
+                    global M
+                    if self.zoom == 1:
+                        print('zoom1')
+                        x_mouse, y_mouse = pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1]
+                        M.extend([[x_mouse, y_mouse]])
+                    if self.zoom == 2:
+                        print('zoom2')
+                        a1, b1 = 1042 / 486, -604
+                        c1, d1 = 872 / 404, -28
+                        a2, b2 = 1042 / 341, -2179
+                        c2, d2 = 872 / 283, -1038
+                        a4, b4 = 1042 / 550, -1296
+                        c4, d4 = 872 / 450, -687
+                        a3, b3 = 1042 / 341, -1862
+                        c3, d3 = 872 / 283, -502
+                        s, t = pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1]
+                        if self.map1 == 'KTHW' :
+                            x_mouse, y_mouse = int((s - b1) / a1), int((t - d1) / c1)
+                            M.extend([[x_mouse, y_mouse]])
+                        if self.map1 == 'KTHE' :
+                            x_mouse, y_mouse = int((s - b4) / a4), int((t - d4) / c4)
+                            M.extend([[x_mouse, y_mouse]])
+                        if self.map1 == 'KistaS' :
+                            x_mouse, y_mouse = int((s - b2) / a2), int((t - d2) / c2)
+                            M.extend([[x_mouse, y_mouse]])
+                        if self.map1 == 'KistaN' :
+                            x_mouse, y_mouse = int((s - b3) / a3), int((t - d3) / c3)
+                            M.extend([[x_mouse, y_mouse]])
 
             ''' Points sent by the car - Conversion GPS > pixels'''
             if L_car != None and l_car != None :
@@ -764,7 +738,7 @@ class Game:
 
                 a4, b4 = 1042 / 550, -1296
                 c4, d4 = 872 / 450, -687
-                if x < 1499 and x_KTH > 947 and y_KTH < 806 and y_KTH > 354 :
+                if x_KTH < 1499 and x_KTH > 947 and y_KTH < 806 and y_KTH > 354 :
                     x_KTHE, y_KTHE = int(a4 * x_KTH + b4), int(c4 * y_KTH + d4)
 
                 a3, b3 = 1042 / 341, -1862
@@ -784,28 +758,28 @@ class Game:
 
             
             if self.zoom == 2 and l_car != None and L_car != None and self.map1 == 'KTHW' :
-            	'''KTHN
-            	bottomright=(1045,1349) resized at (1073,739)
-            	Longueur, largeur = 549,521
-            	points donnes en echelle 1 '''
-            	if x_KTH > 514 and x_KTH < 1002 and y_KTH > 12 and y_KTH < 418 :
+                '''KTHN
+                bottomright=(1045,1349) resized at (1073,739)
+                Longueur, largeur = 549,521
+                points donnes en echelle 1 '''
+                if x_KTH > 514 and x_KTH < 1002 and y_KTH > 12 and y_KTH < 418 :
                     self.position_perso.centerx, self.position_perso.centery = x_KTHE, y_KTHE
 
             if self.zoom == 2 and l_car != None and L_car != None and self.map1 == 'KTHE' :
-            	'''KTHE
-            	topleft=(1345,819)
-            	Longueur, largeur = 433,561 (voir Paint)
-            	points donnes en echelle 1 '''
-            	if x_KTH > 947 and x_KTH < 1499 and y_KTH > 354 and y_KTH < 806 :
+                '''KTHE
+                topleft=(1345,819)
+                Longueur, largeur = 433,561 (voir Paint)
+                points donnes en echelle 1 '''
+                if x_KTH > 947 and x_KTH < 1499 and y_KTH > 354 and y_KTH < 806 :
                     self.position_perso.centery = y_KTHW
                     self.position_perso.centerx = x_KTHW
 
             if self.zoom == 2 and l_car != None and L_car != None and self.map1 == 'KistaN' :
-            	'''KistaN
-            	topleft=(284,156)
-            	Longueur, largeur = 399,417 (voir Paint)
-            	points donnes en echelle 1 '''
-            	if x_Kista > 872 and x_Kista < 1215 and y_Kista > 162 and y_Kista < 447 :
+                '''KistaN
+                topleft=(284,156)
+                Longueur, largeur = 399,417 (voir Paint)
+                points donnes en echelle 1 '''
+                if x_Kista > 872 and x_Kista < 1215 and y_Kista > 162 and y_Kista < 447 :
                     self.position_perso.centerx = x_KistaN
                     self.position_perso.centery = y_KistaN
 
@@ -924,9 +898,9 @@ class Game:
                 ''' Display waypoints of custumized scenario '''
 
                 for i in range(len(M)):
-                	''' Display the waypoints '''
-                	x, y = M[i][0], M[i][1]
-                	pygame.draw.circle(self.screen, ORANGE, (x, y), 5, 0)
+                    ''' Display the waypoints '''
+                    x, y = M[i][0], M[i][1]
+                    pygame.draw.circle(self.screen, ORANGE, (x, y), 5, 0)
 
             ''' Kista '''
             if self.map1 == 'KistaMap' :
@@ -948,9 +922,9 @@ class Game:
                 ''' Display waypoints of custumized scenario '''
 
                 for i in range(len(M)):
-                	''' Display the waypoints '''
-                	x, y = M[i][0], M[i][1]
-                	pygame.draw.circle(self.screen, ORANGE, (x, y), 5, 0)
+                    ''' Display the waypoints '''
+                    x, y = M[i][0], M[i][1]
+                    pygame.draw.circle(self.screen, ORANGE, (x, y), 5, 0)
 
             if event.type == MOUSEBUTTONDOWN:
                 print('MOUSEBUTTONDOWN', event.pos[1])
@@ -968,7 +942,7 @@ class Game:
                 self.screen.blit(self.fond, (315, 245))
             
             if GPSQuali == 'single' :
-            	red_square = pygame.transform.scale(pygame.image.load('red_square.png').convert(), (100, 50))
+                red_square = pygame.transform.scale(pygame.image.load('red_square.png').convert(), (100, 50))
                 self.screen.blit(self.fond, (315, 245))
 
             ''' Obstacle detection '''
@@ -979,9 +953,9 @@ class Game:
 
             ''' Velocity display '''
             if V != None :
-            	self.level = V
+                self.level = V
             else :
-            	self.VarMess = ' No velocity input '
+                self.VarMess = ' No velocity input '
 
 
 
@@ -999,17 +973,17 @@ class Game:
             ''' Update the status '''
             ''' Detect if the data received is updated between 2 loops '''
             if variablePosition % 2 == 0 and l_car != None and L_car != None :
-            	StockPosition[0][0], StockPosition[0][1] = self.position_perso.centerx, self.position_perso.centery
-            	variablePosition += 1
+                StockPosition[0][0], StockPosition[0][1] = self.position_perso.centerx, self.position_perso.centery
+                variablePosition += 1
             elif variablePosition % 2 == 1 and l_car != None and L_car != None :
-            	StockPosition[1][0], StockPosition[1][1] = self.position_perso.centerx, self.position_perso.centery
-            	variablePosition += 1
+                StockPosition[1][0], StockPosition[1][1] = self.position_perso.centerx, self.position_perso.centery
+                variablePosition += 1
           
             if l_car!=None and L_car!=None :
-            	self.status = 'GPS reception'
+                self.status = 'GPS reception'
             if  StockPosition[0][0]-StockPosition[1][0]==0 and StockPosition[0][1]-StockPosition[1][1]==0:
-            	self.status = 'No subscriber'
-           	
+                self.status = 'No subscriber'
+               
 
             # Actualisation de l'affichage
             pygame.display.update()
@@ -1022,13 +996,13 @@ class Game:
 def start():
     print("start")
     boo = Bool()
-    boo.data = True
+    boo.data = False
     EmergencyStopPublisher.publish(boo)
 
 def stop():
     print("stop")
     boo = Bool()
-    boo.data = False
+    boo.data = True
     EmergencyStopPublisher.publish(boo)
 
 
@@ -1038,7 +1012,6 @@ def gamequit():
     print("Quit")
     pygame.quit()
     sys.exit()
-
 
 
 if __name__ == '__main__':

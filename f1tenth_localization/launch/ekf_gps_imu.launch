@@ -9,28 +9,38 @@
 
 <launch>
 
+  <machine name="jetson" address="192.168.2.2" env-loader="~/el2425_ws/devel/
+env.sh" user="ubuntu" password="ubuntu"/>
+
+
   <!-- <rosparam command="load" file="$(find f1tenth_localization)/params/ekf_parameters_gps.yaml"/> -->
   
   <!-- launch reach module -->
   <!-- <node pkg="f1tenth_localization" type="gps_node.py" name="gps"/> -->
   
   <!-- remove gravitational acceleration from imu measurements -->
-  <node pkg="sensor_helpers" type="process_imu.py" name="imu_processing">
-	  <!-- Put the averaged value from sensor_helpers/measure_gravity.py here -->
-	  <param name="g" value="9.693"/>
+  <node machine="jetson" pkg="sensor_helpers" type="process_imu.py" name="imu_processing">
+	  <!-- Put the averaged value from sensor_helpers/measure_gravity.py here (this value might change slowly over time due to IMU drift)-->
+	  <param name="g" value="10.044"/>
   </node>
  
-  <node pkg="sensor_helpers" type="imu_to_odom.py" name="imu_to_odom">
+  <!-- you can uncomment these nodes for visualizing the imu orientation in rviz -->
+  <!-- <node pkg="sensor_helpers" type="imu_to_odom.py" name="imu_to_odom">
 	  <remap from="/imu" to="/imu/measurements"/>
   </node>
-  <node pkg="sensor_helpers" type="imu_visualization_transform.py" name="imu_transform_rviz"/>
+  <node pkg="sensor_helpers" type="imu_visualization_transform.py" name="imu_transform_rviz"/> -->
   
-  <!-- Start  -->
+  <!-- Start the EKF-node -->
   <node pkg="robot_localization" type="ekf_localization_node" name="ekf_localization" clear_params="true">
     <param name="frequency" value="30"/>
     <param name="sensor_timeout" value="0.1"/>
     <param name="two_d_mode" value="true"/>
 
+	<!-- The robot localtion will be estimated in the frame `odom_frame` which has its origin at the starting location of the car (i.e. at the first received gps measurement)
+	
+	The robot velocity is given in the frame `base_link_frame` which is rigidly attached to the robot (i.e. the x-component of velociy always corresponds to forward velocity w.r.t the imu) 
+	
+	The map frame should be set to the same value as the odom frame-->
     <param name="map_frame" value="map"/>            
     <param name="odom_frame" value="odom"/>
     <param name="base_link_frame" value="base_link"/>
@@ -38,33 +48,33 @@
 
     <param name="transform_time_offset" value="0.0"/>
 
+	<!-- Set up GPS measurements -->
     <param name="odom0" value="/odometry/gps"/>
-    <param name="imu0" value="/imu/measurements"/>
-	
-	<!-- X,Y,Z,roll,pitch,yaw,X',Y',Z',roll',pitch',yaw',X'',Y'',Z'' -->
+	<!-- Specift which measurements are given by the sensor: X,Y,Z,roll,pitch,yaw,X',Y',Z',roll',pitch',yaw',X'',Y'',Z'' -->
     <rosparam param="odom0_config">[true, true, true,
                                     false, false, false,
                                     false, false, false,
                                     false, false, false,
                                     false, false, false]</rosparam>
+    <param name="odom0_differential" value="false"/>
+    <param name="odom0_relative" value="false"/>
+    <param name="odom0_queue_size" value="10"/>
+	
 
+    <!-- Set up imu measurements -->
+	<param name="imu0" value="/imu/measurements"/>
     <rosparam param="imu0_config">[false, false, false,
                                    true,  true,  true,
                                    false, false, false,
                                    true, true, true,
                                    true, true, true]</rosparam>
-
-    <param name="odom0_differential" value="false"/>
     <param name="imu0_differential" value="false"/>
-
-    <param name="odom0_relative" value="false"/>
     <param name="imu0_relative" value="false"/>
-
     <param name="imu0_remove_gravitational_acceleration" value="false"/>
-    <param name="print_diagnostics" value="true"/>
-
-    <param name="odom0_queue_size" value="10"/>
     <param name="imu0_queue_size" value="10"/>
+    
+	
+	<param name="print_diagnostics" value="true"/>
 
     <param name="debug"           value="false"/>
     <param name="debug_out_file"  value="debug_ekf_localization.txt"/>
@@ -73,7 +83,7 @@
                                             0.0, 0.05, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
                                             0.0, 0.0, 0.06, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
                                             0.0, 0.0, 0.0, 0.3, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                                            0.0, 0.0, 0.0, 0.0, 0.3, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                                            0.0, 0.0, 0.0, 0.0, 0.6, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
                                             0.0, 0.0, 0.0, 0.0, 0.0, 0.6, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
                                             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.025, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
                                             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.025, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
@@ -102,7 +112,11 @@
                                                     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    1e-9]</rosparam>
   </node>
 
+  <!-- node for transforming lat/long waypoints from the HMI into the odom frame -->
+  <node pkg="f1tenth_localization" type="waypoints_transform_node.py" name="waypoints_transform" output="screen"/>
+  
   <!-- navsat_transform -->
+  <!-- Transforms latitude/longitude measurements from the Reach module into the odom frame. Internally uses the utm coordinate system for global coordinates. To transform -->
   <node pkg="robot_localization" type="navsat_transform_node" name="navsat_transform" respawn="true" output="screen">
      <param name="frequency" value="30"/>
      <param name="delay" value="3"/>
@@ -118,22 +132,10 @@
   </node>
 
 
+  <!-- start rviz with custom display settings -->
   <node pkg="rviz" type="rviz" name="rviz" args="-d $(find f1tenth_localization)/rviz/imu_and_gps.rviz"/>
-  <!-- <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se_odom" clear_params="true"/>
   
-  <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se_map" clear_params="true">
-    <remap from="odometry/filtered" to="odometry/filtered_map"/>
-  </node>
-
-  <rosparam param="datum">[59.350095141, 18.067311404, 0.0, map, base_link]</rosparam>
-
-  <node pkg="robot_localization" type="navsat_transform_node" name="navsat_transform" clear_params="true">
-    <remap from="odometry/filtered" to="odometry/filtered_map"/>
-	<remap from="gps/fix" to="gps/navsat"/>
-    <remap from="/imu/data" to="/imu"/>
-  </node> -->
-  
-  <!-- Base -> Imu transform -->
+  <!-- Base to Imu transform -->
   <node pkg="tf" type="static_transform_publisher" name="base_linl" args="0 0 0 0 0 0 base_link base_imu_link 100"/>
 
 </launch>
