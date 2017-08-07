@@ -96,7 +96,7 @@ from pygame.locals import *
 from math import sqrt
 import numpy as np
 from control1.msg import Cmd
-from f1tenth_localization.msg import gps_reach
+from sensor_helper.msg import gps_reach
 import tf
 #from mocap_source_2 import Mocap, Body
 #mocap = Mocap(host='Inet-PC', info=1)
