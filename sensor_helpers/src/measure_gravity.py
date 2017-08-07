@@ -1,4 +1,7 @@
 #!/usr/bin/env python  
+# computes a moving average of the gravity measured by the imu
+# place the imu still on a table and wait until the average converges, then record the measured value in launch_sensors.launch
+
 
 import rospy
 from sensor_msgs.msg import Imu

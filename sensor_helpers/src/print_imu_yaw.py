@@ -1,5 +1,5 @@
 #!/usr/bin/env python  
-# converts Imu message to Odometry (for visualizing with rviz)
+# plots the yaw from an imu message. This can be used to debug or to check that the imu is callibrated properly. 
 
 import rospy
 from nav_msgs.msg import Odometry

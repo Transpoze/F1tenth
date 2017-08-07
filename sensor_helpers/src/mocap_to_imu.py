@@ -1,5 +1,6 @@
 #!/usr/bin/env python  
 # publishes the direction information from MoCap as an Imu message
+# used for testing ekf
 
 import rospy
 from qualisys.msg import Subject

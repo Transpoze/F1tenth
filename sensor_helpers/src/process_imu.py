@@ -1,4 +1,6 @@
 #!/usr/bin/env python  
+# This node subtracts gravitational acceleration from the accelerometer measurement. The orientaiton of the imu is taken into account by rotating the gravity vector
+# Make sure to measure g using measure_gravity.py since the imu accelerometer measurements can be significantly different from 9.8
 
 import rospy
 import tf
@@ -7,13 +9,7 @@ from sensor_msgs.msg import Imu
 
 def set_timestamp(imu):
 	global pub, g
-	
-	# imu.header.stamp = rospy.get_rostime()
-	# cov = list(imu.linear_acceleration_covariance)
-	# cov[-3] = -1.0
-	# imu.linear_acceleration_covariance = tuple(cov)
-	
-	# Remove gravitational acceleration (put gravity measured by "measure_gravity.py" here!)
+
 	q = [imu.orientation.x,
 		imu.orientation.y,
 		imu.orientation.z,

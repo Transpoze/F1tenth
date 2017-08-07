@@ -48,8 +48,8 @@ def callback1(self):
 
 def calculate_velocity(state):
    global v_desired, y_desired,flag,prev_x,prev_y,prev_t,prev_yaw
-   x=state.position.x
-   y=state.position.y
+   x=state.pose.pose.position.x
+   y=state.pose.pose.position.y
    #yaw=state.orientation.w
    t=state.header.stamp.secs + state.header.stamp.nsecs*1e-9
    if prev_x == None:
@@ -92,9 +92,10 @@ def callback2(state):
       Look_ahead_points=5
       distance=[]
       ref_state=[]
-      x=state.position.x
-      y=state.position.y
-      euler=tf.euler_from_quaternion([state.orientation.x,state.orientation.y,state.orientation.z,state.orientation.w])
+      x=state.pose.pose.position.x
+      y=state.pose.pose.position.y
+	  orientation = state.pose.pose.orientation
+      euler=tf.euler_from_quaternion([orientation.x, orientation.y,orientation.z,orientation.w])
       yaw=euler[2]
       print('yaw',yaw)
       #t=state.header.stamp.secs + state.header.stamp.nsecs*1e-9
@@ -175,7 +176,7 @@ def WaypointsListener():
     rospy.init_node('WaypointsListener', anonymous=True)
     print("listening to way-points")
     rospy.Subscriber('waypoints', PoseArray, callback1)
-    rospy.Subscriber("qualisys/F1Tenth",Subject,callback2)
+    rospy.Subscriber("odometry/filtered",Subject,callback2)
     rospy.Subscriber('detect_result', Cmd, callback3)
     #rospy.Subscriber("car_state_topic", Odometry, callback2)
     rospy.spin()

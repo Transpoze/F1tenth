@@ -9,8 +9,8 @@
 
 <launch>
 
-  <machine name="jetson" address="192.168.2.2" env-loader="~/el2425_ws/devel/
-env.sh" user="ubuntu" password="ubuntu"/>
+  <!-- <machine name="jetson" address="192.168.2.2" env-loader="~/el2425_ws/devel/
+env.sh" user="ubuntu" password="ubuntu"/> -->
 
 
   <!-- <rosparam command="load" file="$(find f1tenth_localization)/params/ekf_parameters_gps.yaml"/> -->
@@ -19,7 +19,7 @@ env.sh" user="ubuntu" password="ubuntu"/>
   <!-- <node pkg="f1tenth_localization" type="gps_node.py" name="gps"/> -->
   
   <!-- remove gravitational acceleration from imu measurements -->
-  <node machine="jetson" pkg="sensor_helpers" type="process_imu.py" name="imu_processing">
+  <node pkg="sensor_helpers" type="process_imu.py" name="imu_processing">
 	  <!-- Put the averaged value from sensor_helpers/measure_gravity.py here (this value might change slowly over time due to IMU drift)-->
 	  <param name="g" value="10.044"/>
   </node>
