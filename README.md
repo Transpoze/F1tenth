@@ -9,6 +9,7 @@ A ROS-package developed during summer 2017 for localization and control of the F
 There are currently two sensors being used for localization:
 - Razor IMU 9DoF - accelerometer, gyro and magnetometer data avaliable as an [Imu message](http://docs.ros.org/api/sensor_msgs/html/msg/Imu.html) on `/imu`
 - Emlid Reach RTK kit - see [reach instructions](https://github.com/KTH-SML/SML_summerproject/blob/master/f1tenth_localization/reach_instructions.md) for more info
+
 All sensors are handeled by the `sensor_helpers` package. To launch the sensors (together with`serial_node` for the Teensy board) use `roslaunch sensor_helpers launch_sensors.launch`. Note that you might need to adjust the port names in the launch file. 
 
 ### Sensor fusion
