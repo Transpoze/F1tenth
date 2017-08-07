@@ -19,7 +19,7 @@ The EKF calculations take place in an instance of `ekf_localization_node` that e
 
 #### Frames
 - the position is given in the `odom` frame which has its origin at the starting location of the car with the positive x-axis pointing north
-- the velocity is given in the `base_link` frame which is rigidly mounted on the base of the car (i.e. `odom.twist.twist.linear.x` is always forward velocity etc)
+- the velocity is given in the `base_link` frame which is rigidly mounted on the base of the car (i.e. the x-component is always forward velocity etc)
 
 
 The `odom->base_link` map is provided by the `ekf_localization_node` 
