@@ -17,6 +17,7 @@ Some important notes:
 ## Troubleshooting
 ### ZED
 - Problem:
+
 No show on ZED Explorer, even though the camera can be recognized (u can tell by checking if it recognizes the serial number on the up-right corner)
 - Solution:
 
