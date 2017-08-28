@@ -1,6 +1,6 @@
 # SML_summerproject
 
-A ROS-package developed during summer 2017 for localization and control of the F1Tenth car. 
+A ROS-package developed during summer 2017 for localization and control of the F1Tenth car with NVIDIA Jetson TK1. 
 
 
 
@@ -25,3 +25,25 @@ The EKF calculations take place in an instance of `ekf_localization_node` that e
 The `odom->base_link` map is provided by the `ekf_localization_node` 
 
 Internally, `navsat_transform_node` uses the [utm coordinate system](https://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system) and a `utm->odom` transform is provided by the node. For converting between utm and latitude/lingitude you can use the python-package [utm](https://pypi.python.org/pypi/utm).
+
+
+## Obstacle avoidance
+### ZED Camera
+[ZED](https://www.stereolabs.com/), a dual lens depth camera, is used for perception. It calculates depth information to create a point cloud. By using a ros package called [zed-ros-wrapper](http://wiki.ros.org/zed-ros-wrapper), the point cloud data will be published as a standard [sensor_msgs/PointCloud2](http://docs.ros.org/api/sensor_msgs/html/msg/PointCloud2.html) message.  
+#### Prerequisites of Using ZED Camera
+On a Linux PC:
+- Ubuntu 16.04
+- ZED SDK (lastest version)
+- CUDA 8
+- ROS Kinetic
+On NVIDIA Jetson TK1:
+- Ubuntu 12.04 or 14.04 64 bits (recommended for host computer to setup Jetson TK1)
+- LinuxforTegra r21.4 (for Jetson)
+- ZED SDK 1.2 (latest version for TK1)
+- CUDA 6.5
+- ROS Indigo
+For more details, check [how to use ZED]
+
+### Obstacle Detection
+
+### Dynamic Path Planning
