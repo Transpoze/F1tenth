@@ -16,12 +16,11 @@ Some important notes:
 
 ## Troubleshooting
 ### ZED
--Problem:
-
-No show on ZED Explorer, even thought the camera can be recognized (u can tell by checking if it recognizes the serial number on the up-right corner)
+- Problem:
+No show on ZED Explorer, even though the camera can be recognized (u can tell by checking if it recognizes the serial number on the up-right corner)
 - Solution:
 
-With reference to https://github.com/stereolabs/zed-ros-wrapper/issues/28
+With reference to [this github issue](https://github.com/stereolabs/zed-ros-wrapper/issues/28)
 1. check if there is conf file in /usr/local/zed/settings, the filename should be SN****.conf. If not, do:
 /usr/local/zed/tools/ZED\ Explorer --dc # or --download_calibration
 2. check if the computer recognize the USB port:
@@ -29,9 +28,5 @@ lsusb | grep 2b03:f580 | wc -l
 should return 1 if ZED is detected
 3. make sure ZED is connected by USB3.0, and change the usb_port_owner = 2 via:
 sudo vi /boot/etlinux/extlinux.conf
-4. make sure Jetson TK1 is properly setup (JetPack, CUDA and ZED SDK), check out this instruction:
-https://www.stereolabs.com/blog/index.php/2015/09/24/getting-started-with-jetson-tk1-and-zed/
-Tutorial of setup JetPack for TK1:
-http://docs.nvidia.com/jetpack-tk1/1_1/content/developertools/mobile/jetpack_install.htm
-Video of setup JetPack for TX1, very similar procedure to the one above:
-https://devtalk.nvidia.com/default/topic/1001763/jetson-tx2/error-jetpack-must-be-run-on-x86_64-host-platform-detected-aarch64-platform-/
+4. make sure Jetson TK1 is properly setup (JetPack, CUDA and ZED SDK), check out [this instruction](
+https://www.stereolabs.com/blog/index.php/2015/09/24/getting-started-with-jetson-tk1-and-zed/)
