@@ -36,6 +36,7 @@ On a Linux PC:
 - ZED SDK (lastest version)
 - CUDA 8
 - ROS Kinetic
+
 On NVIDIA Jetson TK1:
 - Ubuntu 12.04 or 14.04 64 bits (recommended for host computer to setup Jetson TK1)
 - LinuxforTegra r21.4 (for Jetson)
