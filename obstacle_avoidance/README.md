@@ -3,7 +3,7 @@ ZED is claimed to be the fastest depth camera in terms of framerate (1080p 30fps
 to introduce indoor and outdoor long range depth perception (0.5-20m, 110deg max).
 [Here is the official documentation](https://www.stereolabs.com/documentation/overview/getting-started/introduction.html).
 
-### Prerequisites Installation on Jetson TK1
+### Installation on Jetson TK1
 Follow the instruction [here](https://www.stereolabs.com/blog/index.php/2015/09/24/getting-started-with-jetson-tk1-and-zed/).
 Some important notes:
 - You need a Linux host computer to install JetPack and setup TK1 for ZED
@@ -16,8 +16,9 @@ Some important notes:
 
 ### Retrieving Data from ZED
 #### For local application
-Use API for re
-#### For ros
+Use [ZED API](https://www.stereolabs.com/developers/documentation/API/index.html).
+#### For ROS
+Use ROS package zed-ros-wrapper. Check on [ros.org](http://wiki.ros.org/zed-ros-wrapper) or on [Github](https://github.com/stereolabs/zed-ros-wrapper) 
 
 ## Troubleshooting
 ### ZED
