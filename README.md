@@ -43,7 +43,7 @@ On NVIDIA Jetson TK1:
 - ZED SDK 1.2 (latest version for TK1)
 - CUDA 6.5
 - ROS Indigo
-For more details, check [how to use ZED]
+For more details, check [how to use ZED](https://github.com/KTH-SML/SML_summerproject/blob/master/obstacle_avoidance/README.md)
 
 ### Obstacle Detection
 
