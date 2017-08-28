@@ -1,9 +1,9 @@
 ## How to use ZED
 ZED is claimed to be the fastest depth camera in terms of framerate (1080p 30fps, WVGA 100fps) and it's the first sensor
 to introduce indoor and outdoor long range depth perception (0.5-20m, 110deg max).
-[Here is official documentation](https://www.stereolabs.com/documentation/overview/getting-started/introduction.html).
+[Here is the official documentation](https://www.stereolabs.com/documentation/overview/getting-started/introduction.html).
 
-#### Prerequisites Installation on Jetson TK1
+### Prerequisites Installation on Jetson TK1
 Follow the instruction [here](https://www.stereolabs.com/blog/index.php/2015/09/24/getting-started-with-jetson-tk1-and-zed/).
 Some important notes:
 - You need a Linux host computer to install JetPack and setup TK1 for ZED
@@ -14,11 +14,16 @@ Some important notes:
 - Default OpenCV installed by JetPack is 2.7
 - You have to use c++ to develop applications with ZED
 
+### Retrieving Data from ZED
+#### For local application
+Use API for re
+#### For ros
+
 ## Troubleshooting
 ### ZED
 - Problem:
 
-No show on ZED Explorer, even though the camera can be recognized (u can tell by checking if it recognizes the serial number on the up-right corner)
+Test ZED with ZED Explorer after installing everything, but it shows nothing, even though the camera can be recognized (you can tell by checking if it recognizes the serial number on the up-right corner)
 - Solution:
 
 With reference to [this github issue](https://github.com/stereolabs/zed-ros-wrapper/issues/28)
