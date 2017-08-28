@@ -1,7 +1,7 @@
 ## How to use ZED
 ZED is claimed to be the fastest depth camera in terms of framerate (1080p 30fps, WVGA 100fps) and it's the first sensor
 to introduce indoor and outdoor long range depth perception (0.5-20m, 110deg max).
-[Here is the official documentation](https://www.stereolabs.com/documentation/overview/getting-started/introduction.html).
+Here is the official [documentation](https://www.stereolabs.com/documentation/overview/getting-started/introduction.html).
 
 ### Installation on Jetson TK1
 Follow the instruction [here](https://www.stereolabs.com/blog/index.php/2015/09/24/getting-started-with-jetson-tk1-and-zed/).
