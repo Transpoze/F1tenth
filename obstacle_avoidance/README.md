@@ -18,7 +18,7 @@ Some important notes:
 #### For local application
 Use [ZED API](https://www.stereolabs.com/developers/documentation/API/index.html).
 #### For ROS
-Use ROS package zed-ros-wrapper. Check on [ros.org](http://wiki.ros.org/zed-ros-wrapper) or on [Github](https://github.com/stereolabs/zed-ros-wrapper) 
+Use ROS package zed-ros-wrapper. Check on [ros.org](http://wiki.ros.org/zed-ros-wrapper) or [Github](https://github.com/stereolabs/zed-ros-wrapper) 
 
 ## Troubleshooting
 ### ZED
