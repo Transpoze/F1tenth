@@ -28,7 +28,7 @@ In this project (SML Summer job 26.6.2017-6.9.2017), obstacle avoidance is accom
 
 ## Troubleshooting
 ### ZED
-**Problem:** Test ZED with ZED Explorer after installing everything, but it shows nothing, even though the camera can be recognized (you can tell by checking if it recognizes the serial number on the up-right corner)
+**Problem:** Test ZED with ZED Explorer after installing everything, but it shows nothing, even though the camera can be recognized (you can tell by checking if it recognizes the serial number on the up-right corner)***
 **Solution:**
 With reference to [this github issue](https://github.com/stereolabs/zed-ros-wrapper/issues/28)
    1. check if there is conf file in /usr/local/zed/settings, the filename should be SN\*\*\*\*.conf. If not, do:
