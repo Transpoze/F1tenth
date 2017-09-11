@@ -22,7 +22,7 @@ Use catkin ROS package **zed_ros_wrapper**. Check on [ros.org](http://wiki.ros.o
 * Installation
 * How to run/test the program
 * Published topics
-..* Left camera
+...* Left camera
 ...* /camera/rgb/image_rect_color : Color rectified image (left RGB image by default). 
 ...* /camera/rgb/image_raw_color : Color unrectified image (left RGB image by default). 
 ......* /camera/rgb/camera_info : Camera calibration data. 
