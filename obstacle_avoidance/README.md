@@ -30,16 +30,16 @@ In this project (SML Summer job 26.6.2017-6.9.2017), obstacle avoidance is accom
 ### ZED
 - Problem:
 
-⋅⋅⋅Test ZED with ZED Explorer after installing everything, but it shows nothing, even though the camera can be recognized (you can tell by checking if it recognizes the serial number on the up-right corner)
+   Test ZED with ZED Explorer after installing everything, but it shows nothing, even though the camera can be recognized (you can tell by checking if it recognizes the serial number on the up-right corner)
 - Solution:
 
-⋅⋅⋅With reference to [this github issue](https://github.com/stereolabs/zed-ros-wrapper/issues/28)
-1. check if there is conf file in /usr/local/zed/settings, the filename should be SN\*\*\*\*.conf. If not, do:
+   With reference to [this github issue](https://github.com/stereolabs/zed-ros-wrapper/issues/28)
+   1. check if there is conf file in /usr/local/zed/settings, the filename should be SN\*\*\*\*.conf. If not, do:
 /usr/local/zed/tools/ZED\ Explorer --dc # or --download_calibration
-2. check if the computer recognize the USB port:
+   2. check if the computer recognize the USB port:
 lsusb | grep 2b03:f580 | wc -l
 should return 1 if ZED is detected
-3. make sure ZED is connected by USB3.0, and change the usb_port_owner = 2 via:
+   3. make sure ZED is connected by USB3.0, and change the usb_port_owner = 2 via:
 sudo vi /boot/etlinux/extlinux.conf
-4. make sure Jetson TK1 is properly setup (JetPack, CUDA and ZED SDK), check out [this instruction](
+   4. make sure Jetson TK1 is properly setup (JetPack, CUDA and ZED SDK), check out [this instruction](
 https://www.stereolabs.com/blog/index.php/2015/09/24/getting-started-with-jetson-tk1-and-zed/)
