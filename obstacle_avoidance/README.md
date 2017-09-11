@@ -4,7 +4,7 @@ to introduce indoor and outdoor long range depth perception (0.5-20m, 110deg max
 Here is the official [documentation](https://www.stereolabs.com/documentation/overview/getting-started/introduction.html).
 
 ### Installation on Jetson TK1
-Follow the instruction [here](https://www.stereolabs.com/blog/index.php/2015/09/24/getting-started-with-jetson-tk1-and-zed/).
+Please follow the instruction [here](https://www.stereolabs.com/blog/index.php/2015/09/24/getting-started-with-jetson-tk1-and-zed/).
 Some important notes:
 - You need a Linux host computer to install JetPack and setup TK1 for ZED
 - Always try to use USB 3.0, even if the official documentation claims that USB 2.0 works
