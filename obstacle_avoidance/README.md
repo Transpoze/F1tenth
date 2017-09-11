@@ -24,11 +24,17 @@ Use catkin ROS package **zed_ros_wrapper**. It creates several topics publishing
 * Published topics
 
 ## Obstacle Avoidance
-In this project (SML Summer job 26.6.2017-6.9.2017), obstacle avoidance is accomplished by two steps:
+In this project (SML Summer job 26.6.2017-6.9.2017), a ROS package named **obstacle_avoidance** is created for our goal. It works as a ROS node processing point cloud data and generating commands to the controller. We accomplished obstacle avoidance in two steps: detection and dynamic path planning. The main script is [obstacle_avoidance.py].
+### Obstacle Detection
+
+### Dynamic Path Planning
+first detecting whether there is
+obstacle or not, then estimating the width and distance of the obstacles, and in the end generating a new fixed waypoints aside the obstacle
 
 ## Troubleshooting
 ### ZED
-**Problem:** Test ZED with ZED Explorer after installing everything, but it shows nothing, even though the camera can be recognized (you can tell by checking if it recognizes the serial number on the up-right corner)***
+**Problem:** Test ZED with ZED Explorer after installing everything, but it shows nothing, even though the camera can be recognized (you can tell by checking if it recognizes the serial number on the up-right corner)
+
 **Solution:**
 With reference to [this github issue](https://github.com/stereolabs/zed-ros-wrapper/issues/28)
    1. check if there is conf file in /usr/local/zed/settings, the filename should be SN\*\*\*\*.conf. If not, do:
