@@ -18,37 +18,21 @@ Some important notes:
 #### For local application
 Use [ZED API](https://www.stereolabs.com/developers/documentation/API/index.html).
 #### For ROS
-Use catkin ROS package **zed_ros_wrapper**. Check on [ros.org](http://wiki.ros.org/zed-ros-wrapper) and [Github](https://github.com/stereolabs/zed-ros-wrapper) for:
+Use catkin ROS package **zed_ros_wrapper**. It creates several topics publishing original image data, point cloud, etc. Check on [ros.org](http://wiki.ros.org/zed-ros-wrapper) and [Github](https://github.com/stereolabs/zed-ros-wrapper) for:
 * Installation
 * How to run/test the program
 * Published topics
-...* Left camera
-...* /camera/rgb/image_rect_color : Color rectified image (left RGB image by default). 
-...* /camera/rgb/image_raw_color : Color unrectified image (left RGB image by default). 
-......* /camera/rgb/camera_info : Camera calibration data. 
-......* /camera/left/image_rect_color : Color rectified left image. 
-......* /camera/left/image_raw_color : Color unrectified left image. 
-......* /camera/left/camera_info : Left camera calibration data. 
-....Right camera
-......* 
-......* 
-......* 
-......* 
-......* 
-......* 
-......* 
 
-
+## Obstacle Avoidance
+In this project (SML Summer job 26.6.2017-6.9.2017), obstacle avoidance is accomplished by two steps:
 
 ## Troubleshooting
 ### ZED
 - Problem:
-
-Test ZED with ZED Explorer after installing everything, but it shows nothing, even though the camera can be recognized (you can tell by checking if it recognizes the serial number on the up-right corner)
+⋅⋅⋅Test ZED with ZED Explorer after installing everything, but it shows nothing, even though the camera can be recognized (you can tell by checking if it recognizes the serial number on the up-right corner)
 - Solution:
-
-With reference to [this github issue](https://github.com/stereolabs/zed-ros-wrapper/issues/28)
-1. check if there is conf file in /usr/local/zed/settings, the filename should be SN****.conf. If not, do:
+⋅⋅⋅With reference to [this github issue](https://github.com/stereolabs/zed-ros-wrapper/issues/28)
+1. check if there is conf file in /usr/local/zed/settings, the filename should be SN\*\*\*\*.conf. If not, do:
 /usr/local/zed/tools/ZED\ Explorer --dc # or --download_calibration
 2. check if the computer recognize the USB port:
 lsusb | grep 2b03:f580 | wc -l
