@@ -18,7 +18,27 @@ Some important notes:
 #### For local application
 Use [ZED API](https://www.stereolabs.com/developers/documentation/API/index.html).
 #### For ROS
-Use ROS package zed-ros-wrapper. Check on [ros.org](http://wiki.ros.org/zed-ros-wrapper) or [Github](https://github.com/stereolabs/zed-ros-wrapper) 
+Use catkin ROS package **zed_ros_wrapper**. Check on [ros.org](http://wiki.ros.org/zed-ros-wrapper) and [Github](https://github.com/stereolabs/zed-ros-wrapper) for:
+..- Installation
+..- How to run/test the program
+..- Published topics
+....Left camera
+......* /camera/rgb/image_rect_color : Color rectified image (left RGB image by default). 
+......* /camera/rgb/image_raw_color : Color unrectified image (left RGB image by default). 
+......* /camera/rgb/camera_info : Camera calibration data. 
+......* /camera/left/image_rect_color : Color rectified left image. 
+......* /camera/left/image_raw_color : Color unrectified left image. 
+......* /camera/left/camera_info : Left camera calibration data. 
+....Right camera
+......* 
+......* 
+......* 
+......* 
+......* 
+......* 
+......* 
+
+
 
 ## Troubleshooting
 ### ZED
