@@ -15,16 +15,16 @@ Some important notes:
 - You have to use c++ to develop applications with ZED
 
 ### Retrieving Data from ZED
-#### For local application
-Use [ZED API](https://www.stereolabs.com/developers/documentation/API/index.html).
-#### For ROS
+#### With API
+You can look into ZED API [here](https://www.stereolabs.com/developers/documentation/API/index.html). Interfaces are written in C++. This is more flexible for customizing your own project, and you can use it with [Point Cloud Library](http://pointclouds.org/) etc. to process point cloud data and images.
+#### With ROS
 Use catkin ROS package **zed_ros_wrapper**. It creates several topics publishing original image data, point cloud, etc. Check on [ros.org](http://wiki.ros.org/zed-ros-wrapper) and [Github](https://github.com/stereolabs/zed-ros-wrapper) for:
 * Installation
 * How to run/test the program
 * Published topics
 
 ## Obstacle Avoidance
-In this project (SML Summer job 26.6.2017-6.9.2017), a ROS package named **obstacle_avoidance** is created for our goal. It works as a ROS node processing point cloud data and generating commands to the controller. We accomplished obstacle avoidance in two steps: detection and dynamic path planning. The main script is [obstacle_avoidance.py].
+In this project (SML Summer job 26.6.2017-6.9.2017), a ROS package named **obstacle_avoidance** is created for the f1tenth vehichle to avoid single obstacle on its path. Any solid object will be regarded as obstacle without distinction. If several obstacles exists, they will be combined and considered as one large obstacle. In general, the package works as a ROS node which reads in point cloud data from ZED camera and sends commands to the controller. We accomplished obstacle avoidance in two steps: detection and dynamic path planning. The main script is [obstacle_avoidance.py]. Please see details below.
 ### Obstacle Detection
 
 ### Dynamic Path Planning
