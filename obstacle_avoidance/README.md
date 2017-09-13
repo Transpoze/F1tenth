@@ -36,9 +36,9 @@ As shown in the figure below, the vehicle is represented by a black square and t
 
 ![image](https://github.com/xxxx.jpg)
 
-Then we calculate the left and right open angle as /theta_L θ and $$/theta_R$$. The new waypoint *P* will be set on the larger open angle side to guide the car avoiding the obstacle. In this figure, $$/theta_L$$ is larger than $$/theta_R$$, so *P* is set on the left side. *OP* is the angle bisector of $$/theat_L$$. The exact location of *P* is given by $$/theta_P$$ and $$S_P$$. $$S_P$$ is a constant variable, which is given by experiments.
+Then we calculate the left and right open angle as *θ_L* and *θ_R*. The new waypoint *P* will be set on the larger open angle side to guide the car avoiding the obstacle. In this figure, *θ_L* is larger than *θ_R*, so *P* is set on the left side. *OP* is the angle bisector of *θ_L*. The exact location of *P* is given by *θ_P* and *S_P*. *S_P* is a constant variable, which is given by experiments.
 
-Note that, if $$/theta_P$$ is too small, then the vehicle will probably crash on the edge of the obstacle. If the it's too large, then the vehicle will go too far from the original path. To reach a balance, here we use $$/theta_L$$ and $$/theta_R$$ as the open angle instead of $$/theta_{L}+/theta_0$$ and $$/theta_{R}+/theta_0$$. The base angle $$/theta_0$$ is a positive constant variable chosen empirically to limit $$/theta_P$$ to a relatively smaller value provided that the vehicle won't run into the obstacle.
+Note that, if *θ_P* is too small, then the vehicle will probably crash on the edge of the obstacle. If the it's too large, then the vehicle will go too far from the original path. To reach a balance, here we use *θ_L* and *θ_R* as the open angle instead of *θ_L*+*θ_0* and *θ_R*+*θ_0*. The base angle *θ_0* is a positive constant variable chosen empirically to limit *θ_P* to a relatively smaller value provided that the vehicle won't run into the obstacle.
 
 Also, please note that the position of each dot in point cloud is given in the camera frame, which is different from the local frame here in the figure. Hence, in order to calculate the distances and angles mentioned above, we need to do a simple coordinate transformation for the points based on the geometry information of the car, which is accomplished explicitly in the code.
 
