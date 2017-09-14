@@ -45,12 +45,12 @@ There are three things you should bear in mind:
 * Outlier detection.
 
 
-After the node goes through the detection and avoidance step, it will send the flag, indicating if there is an obstacle or not, and the *θ_P*, indicating the location where the vehicle should go, to the ROS topic `/detect_result` as a customized ROS message. The message type is `Cmd` and `queue_size=1`.
+After the detection and avoidance step, the node will publish the flag, indicating if there is an obstacle or not, and the *θ_P*, indicating the location where the vehicle should go, to the ROS topic `/detect_result` as a customized ROS message. The message type is `Cmd` and `queue_size=1`.
 
 To sum up, parameters you need to care about in the *obstacle_detection* package is that:
 **parameters**
 
-The node run in at least 10Hz. There is extra latency caused by camera. It takes around 0.1 seconds between obtaining the image and publishing the point cloud ROS message. In this case, without any deceleration setup, the car should run in a constant speed less than 1.5 m/s. Otherwise, the avoidance is very likely to fail.
+The node run in at least 10Hz. Time complexity is O(n), n is the amount of points in detection region. There is extra latency caused by camera. It takes around 0.1 seconds between obtaining the image and publishing the point cloud ROS message. In this case, without any deceleration setup, the car should run in a constant speed less than 1.5 m/s. Otherwise, the avoidance is very likely to fail.
 
 
 ## Troubleshooting
