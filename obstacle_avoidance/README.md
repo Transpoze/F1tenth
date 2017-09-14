@@ -45,7 +45,7 @@ There are three things you should bear in mind:
 * Outlier detection.
 
 
-After the node goes through the detection and avoidance step, it will send the flag, indicating if there is an obstacle or not, and the *θ_P*, indicating the location where the vehicle should go, to the ROS topic `/detect_result` as a customized ROS message. **The type of the message is **
+After the node goes through the detection and avoidance step, it will send the flag, indicating if there is an obstacle or not, and the *θ_P*, indicating the location where the vehicle should go, to the ROS topic `/detect_result` as a customized ROS message. The message type is `Cmd` and `queue_size=1`.
 
 To sum up, parameters you need to care about in the *obstacle_detection* package is that:
 **parameters**
