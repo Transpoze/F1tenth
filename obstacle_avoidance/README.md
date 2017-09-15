@@ -12,7 +12,7 @@ Some important notes:
 - The [lastest version of ZED SDK for TK1](https://www.stereolabs.com/developers/release/1.2/) is 1.2 and it stops updating.
 - TK1 only works with CUDA 6.5
 - Default OpenCV installed by JetPack is 2.7
-- You have to use c++ to develop applications with ZED
+- ZED provides API in C++ and a ROS wrapper (see details below)
 
 ### Retrieving Data from ZED
 #### With API
