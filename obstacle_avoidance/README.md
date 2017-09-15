@@ -7,7 +7,7 @@ Here is the official [documentation](https://www.stereolabs.com/documentation/ov
 Please follow the instruction [here](https://www.stereolabs.com/blog/index.php/2015/09/24/getting-started-with-jetson-tk1-and-zed/).
 Some important notes:
 - You need a Linux host computer to install JetPack and setup TK1 for ZED
-- Always try to use USB 3.0, even if the official documentation claims that USB 2.0 works
+- **Always** use USB 3.0, even if the official documentation claims that USB 2.0 works
 - If you have to flash TK1 (usually this is only for installing the OS on TK1), you can check [this video](https://devtalk.nvidia.com/default/topic/1001763/jetson-tx2/error-jetpack-must-be-run-on-x86_64-host-platform-detected-aarch64-platform-/) for reference.
 - The [lastest version of ZED SDK for TK1](https://www.stereolabs.com/developers/release/1.2/) is 1.2 and it stops updating.
 - TK1 only works with CUDA 6.5
@@ -68,6 +68,7 @@ The node run in at least 10Hz. Time complexity is O(n), n is the amount of point
 ## Troubleshooting
 ### ZED
 **Problem:** Test ZED with ZED Explorer after installing everything, but it shows nothing, even though the camera can be recognized (you can tell by checking if it recognizes the serial number on the up-right corner).
+
 **Solution:**
 With reference to [this github issue](https://github.com/stereolabs/zed-ros-wrapper/issues/28)
    1. check if there is conf file in /usr/local/zed/settings, the filename should be SN\*\*\*\*.conf. If not, do:
@@ -79,3 +80,30 @@ should return 1 if ZED is detected
 sudo vi /boot/etlinux/extlinux.conf
    4. make sure Jetson TK1 is properly setup (JetPack, CUDA and ZED SDK), check out [this instruction](
 https://www.stereolabs.com/blog/index.php/2015/09/24/getting-started-with-jetson-tk1-and-zed/)
+
+**Problem:** There are very few times, the camera cannot be launched through zed.launch. After running roslaunch zed_wrapper zed.launch, the process dies by itself and we have output in the terminal like:
+```
+ZED SDK >> (Init) Best GPU Found : GK20A , ID : 0
+ZED SDK >> (Init) Disparity mode has been set to PERFORMANCE
+ZED SDK >> (Init) Creating ZED GPU mem...
+ZED SDK >> (Init) Starting Self-Calibration in background... 
+[zed/zed_wrapper_node-3] process has died [pid 3540, exit code -9, cmd /home/ubuntu/el2425_ws/devel/lib/zed_wrapper/zed_wrapper_node __name:=zed_wrapper_node __log:=/home/ubuntu/.ros/log/fb2b5c5c-1dd6-11b2-8e95-00044b49198a/zed-zed_wrapper_node-3.log].
+log file: /home/ubuntu/.ros/log/fb2b5c5c-1dd6-11b2-8e95-00044b49198a/zed-zed_wrapper_node-3*.log
+```
+
+**Solution:** First make sure ZED uses 3.0 USB interface. Restart Jetson usually helps. If doesn't, replug the camera (maybe try another USB port) and restart again. Cannot identify the cause. I guess it's just the software not robust enough. Also, there is no such bug report on the Internet.
+
+**Problem:** How to interpret pointcloud2 message as data is stored in uint8, 32 bytes for each point, how to segment x, y, z, rgb out?
+
+**Solution:** Check documentation of pointcloud2:
+[http://docs.ros.org/kinetic/api/sensor_msgs/html/msg/PointCloud2.html](http://docs.ros.org/kinetic/api/sensor_msgs/html/msg/PointCloud2.html)
+Source code of read_points:
+[http://docs.ros.org/jade/api/sensor_msgs/html/point__cloud2_8py_source.html](http://docs.ros.org/jade/api/sensor_msgs/html/point__cloud2_8py_source.html)
+Using PointCloud2.read_points to read the message.
+[http://answers.ros.org/question/202787/using-pointcloud2-data-getting-xy-points-in-python/](http://answers.ros.org/question/202787/using-pointcloud2-data-getting-xy-points-in-python/)
+[http://answers.ros.org/question/115136/python-pointcloud2-read_points-problem/](http://answers.ros.org/question/115136/python-pointcloud2-read_points-problem/)
+
+**Problem:** The vehicle crashes on the obstacle. What can I do?
+**Solution:**
+1. Improve detection:
+```* ind
