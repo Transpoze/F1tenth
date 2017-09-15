@@ -48,7 +48,7 @@ There are three things you should bear in mind:
 After the detection and avoidance step, the node will publish the flag, indicating if there is an obstacle or not, and the *θ_P*, indicating the location where the vehicle should go, to the ROS topic `/detect_result` as a customized ROS message. The message type is `Cmd` and `queue_size=1`.
 
 To sum up, parameters you need to care about in the *obstacle_detection* package is that:
-'''python
+```python
 # Initialize obstacle detection parameters
 step = 10  # sample the cloud points every step length in both height and width direction
 depth_min = 0.1  # to get rid of (0,0,0,0) points
@@ -64,7 +64,7 @@ point_count_min = 700/step**2  # minimum number of points to be regarded as a va
 dis_center_threshold = 1  # min value of distance between two valid cluster, in meters
 dis_edge_threshold = 1  # min value of distance between two edges tolerate the car to go through
 target_angle = np.pi/2  # default value for current target angle
-'''
+```
 
 The node run in at least 10Hz. Time complexity is O(n), n is the amount of points in detection region. There is extra latency caused by camera. It takes around 0.1 seconds between obtaining the image and publishing the point cloud ROS message. In this case, without any deceleration setup, the car should run in a constant speed less than 1.5 m/s. Otherwise, the avoidance is very likely to fail.
 
