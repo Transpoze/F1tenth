@@ -45,7 +45,7 @@ There are several things you should bear in mind:
 * A intuitive concern is that outliers scattering around the real obstacle like noise will make the detection over estimate the size of the obstacle. We apply KMeans clustering on the pre-processed point cloud xyz coordinates with `K=2` and check if the number of points in one cluster is larger than 10 times the other cluster. The smaller cluster will be considered as outlier and thus neglected. However, we tested with single obstacle ahead, usually a box or a human, for ten times, it never detected outliers. The point cloud quality is good and stable, also, the sub-sampling step helps to get rid of the noise.
 
 
-After the detection and avoidance step, the node will publish the flag, indicating if there is an obstacle or not, and the *θ_P*, indicating the location where the vehicle should go, to the ROS topic `/detect_result` as a customized ROS message. The message type is `Cmd` and `queue_size=1`.
+After the detection and avoidance step, the node will publish the flag, indicating if there is an obstacle or not, and the *θ_P*, indicating the location where the vehicle should go, to the ROS topic `/detect_result` as a customized ROS message. The message type is `Cmd` and `queue_size=1`. The controller subscribes to this topic. If ```Cmd.flag``` is ```string True```, then it temporally jumps out from the previous pure pursuit logic (it chases for the look ahead point) and instructs the car to go towards the new way point *P* in the direction of ```Cmd.turning_angle``` also using pure pursuit motion planning. There is a tolerance value in the controller to judge if the vehicle has reached the new waypoint. Empirically, we set the distance to the new way point from the vehicle as 1 meter and the tolerance as 0.9 meters. If the distance between vehicle and the new waypoint is less than the tolerance value, then the point is reached and the controller will switch back to the normal pure pursuit mode and bring the car back to the original path. The controller will continue to process ```/detect_result``` message only after the new waypoint is reached.
 
 To sum up, parameters you need to care about in the *obstacle_detection* package are:
 ```python
@@ -60,13 +60,14 @@ alpha_x = 3  # coefficient for dynamically change the detection range
 alpha_y = 3  # coefficient for dynamically change the detection range
 k = 2  # number of clusters for KMeans, maximum 8 for visualization convenience
 point_count_min = 700/step**2  # detection threshold, minimum number of points to be regarded as a valid obstacle
+# Initialize obstacle avoidance parameters
+theta_zero = np.pi/6  # help to limit the turning angle to an appropriate small value when the vehicle sees an obstacle
 ```
 
 The node run in at least 10Hz. Time complexity is O(n), n is the amount of points in detection region. There is extra latency caused by camera. It takes approximately 0.1 seconds between obtaining the image and publishing the point cloud ROS message. The allows the car to run at a constant speed less than 1.5 m/s, without any deceleration setup. Otherwise, the avoidance is very likely to fail.
 
 
 ## Troubleshooting
-### ZED
 **Problem:** Test ZED with ZED Explorer after installing everything, but it shows nothing, even though the camera can be recognized (you can tell by checking if it recognizes the serial number on the up-right corner).
 
 **Solution:**
@@ -90,21 +91,33 @@ ZED SDK >> (Init) Starting Self-Calibration in background...
 [zed/zed_wrapper_node-3] process has died [pid 3540, exit code -9, cmd /home/ubuntu/el2425_ws/devel/lib/zed_wrapper/zed_wrapper_node __name:=zed_wrapper_node __log:=/home/ubuntu/.ros/log/fb2b5c5c-1dd6-11b2-8e95-00044b49198a/zed-zed_wrapper_node-3.log].
 log file: /home/ubuntu/.ros/log/fb2b5c5c-1dd6-11b2-8e95-00044b49198a/zed-zed_wrapper_node-3*.log
 ```
-
 **Solution:** First make sure ZED uses 3.0 USB interface. Restart Jetson usually helps. If doesn't, replug the camera (maybe try another USB port) and restart again. Cannot identify the cause. I guess it's just the software not robust enough. Also, there is no such bug report on the Internet.
 
 **Problem:** How to interpret pointcloud2 message as data is stored in uint8, 32 bytes for each point, how to segment x, y, z, rgb out?
 
 **Solution:** Check documentation of pointcloud2:  
 [http://docs.ros.org/kinetic/api/sensor_msgs/html/msg/PointCloud2.html](http://docs.ros.org/kinetic/api/sensor_msgs/html/msg/PointCloud2.html)  
-Source code of read_points:...
-[http://docs.ros.org/jade/api/sensor_msgs/html/point__cloud2_8py_source.html](http://docs.ros.org/jade/api/sensor_msgs/html/point__cloud2_8py_source.html)...
-Using PointCloud2.read_points to read the message...
-[http://answers.ros.org/question/202787/using-pointcloud2-data-getting-xy-points-in-python/](http://answers.ros.org/question/202787/using-pointcloud2-data-getting-xy-points-in-python/)...
-[http://answers.ros.org/question/115136/python-pointcloud2-read_points-problem/](http://answers.ros.org/question/115136/python-pointcloud2-read_points-problem/)...
+Source code of read_points:  
+[http://docs.ros.org/jade/api/sensor_msgs/html/point__cloud2_8py_source.html](http://docs.ros.org/jade/api/sensor_msgs/html/point__cloud2_8py_source.html)  
+Using PointCloud2.read_points to read the message  
+[http://answers.ros.org/question/202787/using-pointcloud2-data-getting-xy-points-in-python/](http://answers.ros.org/question/202787/using-pointcloud2-data-getting-xy-points-in-python/)  
+[http://answers.ros.org/question/115136/python-pointcloud2-read_points-problem/](http://answers.ros.org/question/115136/python-pointcloud2-read_points-problem/)
 
 **Problem:** The vehicle crashes on the obstacle. What can I do?
-**Solution:**
+
+**Solution:**  
 1. Improve detection:
-``* ind
-``* dd
+   * Use the camera high-speed modes (HD720 @ 60 FPS or VGA @ 100 FPS), see [here](https://www.stereolabs.com/documentation/overview/video/introduction.html) how to change the camera resolution
+   * Increase sampling step to have a smaller point cloud, yet the quality decreases
+   * Reduce the detection region (usually width) also to have a small point cloud
+   * Increase detection distance to detect obstacles earlier, but too large will make the car too sensitve
+   * Check the enviroment, the camera may suffer from the illumination
+2. Improve avoidance:
+   * Decrease *theta_0*, make the vehicle go further away from the obstacle
+   * Decrease the distance from the vehicle to the new waypoint
+   * Reduce the tolerance for reaching the new waypoint, but it should be higher than 0.8 meters otherwise the car will never reach the point
+   
+**Problem:** The vehicle detects obstacle and turns, but it gets lost and goes wild never comming back to the original path.
+
+**Solution:** This is because the vehicle doesn't reach the new waypoint, or the localization result is bad.
+With current avoidance logic, several parameters should be carefully tuned, i.e. the distance to new waypoint, tolerance, detection region, vehicle speed, theta_0, etc. Theoretically, geometric constraints on these parameters could be calculated, as the motion of the vehicle is determined explicitly by pure pursuit motion planning. However, this hasn't been done yet. Instead they are tuned empirically.
