@@ -32,9 +32,9 @@ Obstacle(s) is detected when the number of points in the detection region exceed
 ### Dynamic Path Planning
 If nothing is detected, the controller works in "*normal mode*", which applys pure pursuit for motion planning. When an obstacle(s) is detected, which essentially means that the number of points in the point cloud is too large to be a false detection, it triggers dynamic path planning. Our node will send a new fixed waypoint aside the obstacle (we use the word "fixed" to indicate that this point is fixed in the utm frame), which is in the utm frame, to the controller. This new waypoint is generated basing on the estimated distance and width of the obstacle.
 
-As shown in the figure below, the vehicle is represented by a black square and the point cloud is represented by a black curve in front of the vehicle. As the car moves in 2-D, so we simplified the problem in a 2-D local coordinate system. The origin indicates the location of the car. We take the closest point to the car from the pre-processed point cloud to measure the distance of the obstacle, and the edge points to indicate the boundary of obstacle, hence we have *L* and *R* which shows the width and distance of the obstacle.
+As shown in the figure below, the vehicle is represented by a black square, the camera is amounted in the front of the car represented as red square, and the point cloud is represented by a black curve in front of the vehicle. As the car moves in 2-D, so we simplified the problem in a 2-D local coordinate system. The origin indicates the location of the car. We take the closest point to the car from the pre-processed point cloud to measure the distance of the obstacle, and the edge points to indicate the boundary of obstacle, hence we have *L* and *R* which shows the width and distance of the obstacle.
 
-![image](https://github.com/xxxx.jpg)
+![image](https://github.com/KTH-SML/SML_summerproject/blob/master/Figures/Obstacle_Avoidance.png)
 
 Then we calculate the left and right open angle as *θ_L* and *θ_R*. The new waypoint *P* will be set on the larger open angle side to guide the car avoiding the obstacle. In this figure, *θ_L* is larger than *θ_R*, so *P* is set on the left side. *OP* is the angle bisector of *θ_L*. The exact location of *P* is given by *θ_P* and *S_P*. *S_P* is a constant variable, which is given by experiments.
 
