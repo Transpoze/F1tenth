@@ -68,8 +68,7 @@ The node run in at least 10Hz. Time complexity is O(n), n is the amount of point
 
 
 ## Troubleshooting
-**Problem:** Test ZED with ZED Explorer after installing everything, but it shows nothing, even though the camera can be recognized (you can tell by checking if it recognizes the serial number on the up-right corner).
-
+**Problem:** Test ZED with ZED Explorer after installing everything, but it shows nothing, even though the camera can be recognized (you can tell by checking if it recognizes the serial number on the up-right corner).  
 **Solution:**
 With reference to [this github issue](https://github.com/stereolabs/zed-ros-wrapper/issues/28)
    1. check if there is conf file in /usr/local/zed/settings, the filename should be SN\*\*\*\*.conf. If not, do:
@@ -90,11 +89,10 @@ ZED SDK >> (Init) Creating ZED GPU mem...
 ZED SDK >> (Init) Starting Self-Calibration in background... 
 [zed/zed_wrapper_node-3] process has died [pid 3540, exit code -9, cmd /home/ubuntu/el2425_ws/devel/lib/zed_wrapper/zed_wrapper_node __name:=zed_wrapper_node __log:=/home/ubuntu/.ros/log/fb2b5c5c-1dd6-11b2-8e95-00044b49198a/zed-zed_wrapper_node-3.log].
 log file: /home/ubuntu/.ros/log/fb2b5c5c-1dd6-11b2-8e95-00044b49198a/zed-zed_wrapper_node-3*.log
-```
+```  
 **Solution:** First make sure ZED uses 3.0 USB interface. Restart Jetson usually helps. If doesn't, replug the camera (maybe try another USB port) and restart again. Cannot identify the cause. I guess it's just the software not robust enough. Also, there is no such bug report on the Internet.
 
-**Problem:** How to interpret pointcloud2 message as data is stored in uint8, 32 bytes for each point, how to segment x, y, z, rgb out?
-
+**Problem:** How to interpret pointcloud2 message as data is stored in uint8, 32 bytes for each point, how to segment x, y, z, rgb out?  
 **Solution:** Check documentation of pointcloud2:  
 [http://docs.ros.org/kinetic/api/sensor_msgs/html/msg/PointCloud2.html](http://docs.ros.org/kinetic/api/sensor_msgs/html/msg/PointCloud2.html)  
 Source code of read_points:  
@@ -103,8 +101,7 @@ Using PointCloud2.read_points to read the message
 [http://answers.ros.org/question/202787/using-pointcloud2-data-getting-xy-points-in-python/](http://answers.ros.org/question/202787/using-pointcloud2-data-getting-xy-points-in-python/)  
 [http://answers.ros.org/question/115136/python-pointcloud2-read_points-problem/](http://answers.ros.org/question/115136/python-pointcloud2-read_points-problem/)
 
-**Problem:** The vehicle crashes on the obstacle. What can I do?
-
+**Problem:** The vehicle crashes on the obstacle. What can I do?  
 **Solution:**  
 1. Improve detection:
    * Use the camera high-speed modes (HD720 @ 60 FPS or VGA @ 100 FPS), see [here](https://www.stereolabs.com/documentation/overview/video/introduction.html) how to change the camera resolution
@@ -117,7 +114,6 @@ Using PointCloud2.read_points to read the message
    * Decrease the distance from the vehicle to the new waypoint
    * Reduce the tolerance for reaching the new waypoint, but it should be higher than 0.8 meters otherwise the car will never reach the point
    
-**Problem:** The vehicle detects obstacle and turns, but it gets lost and goes wild never comming back to the original path.
-
+**Problem:** The vehicle detects obstacle and turns, but it gets lost and goes wild never comming back to the original path.  
 **Solution:** This is because the vehicle doesn't reach the new waypoint, or the localization result is bad.
 With current avoidance logic, several parameters should be carefully tuned, i.e. the distance to new waypoint, tolerance, detection region, vehicle speed, theta_0, etc. Theoretically, geometric constraints on these parameters could be calculated, as the motion of the vehicle is determined explicitly by pure pursuit motion planning. However, this hasn't been done yet. Instead they are tuned empirically.
