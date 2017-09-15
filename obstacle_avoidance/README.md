@@ -50,18 +50,27 @@ After the detection and avoidance step, the node will publish the flag, indicati
 To sum up, parameters you need to care about in the *obstacle_detection* package are:
 ```python
 # Initialize obstacle detection parameters
-step = 10  # sample the cloud points for every 10 points in both height and width direction
-depth_min = 0.1  # detection region, depth boundary min
-depth_max = 1.5  # detection region, depth boundary max, depth_max = velocity_max * 2* processing_time + slip_distance
-height_min = -0.05  # detection region, heigh boundary min, only consider points higher than 0.05 meters to segment out the road
-width_min = -0.62  # detection region, width boundary right
-width_max = 0.5  # detection region, width boundary left
-alpha_x = 3  # coefficient for dynamically change the detection range
-alpha_y = 3  # coefficient for dynamically change the detection range
+step = 10  # sample the cloud points every step length in both height and width direction
+# coefficients for detection region
+depth_min = 0.3  
+depth_max = 2.5
+height_min = 0.1
+width_min = -0.62
+width_max = 0.5
+depth_max_static = 2
+width_static = 0.4
+base_line = 0.12  # camera base line
+alpha_x = 1  # coefficient for dynamically change the detection range
+alpha_y = 1  # coefficient for dynamically change the detection range
+# coefficients for KMeans clustering
 k = 2  # number of clusters for KMeans, maximum 8 for visualization convenience
-point_count_min = 700/step**2  # detection threshold, minimum number of points to be regarded as a valid obstacle
+criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 10, 0.05)
+attempts = 10
+flag_kmeans = cv2.KMEANS_PP_CENTERS
+# detection threshold, minimum number of points to be regarded as a valid obstacle
+point_count_min = 700/step**2  
 # Initialize obstacle avoidance parameters
-theta_zero = np.pi/6  # help to limit the turning angle to an appropriate small value when the vehicle sees an obstacle
+theta_zero = 0.36  # in radius, helps to limit the turning angle to an appropriate small value when the vehicle sees an obstacle
 ```
 
 The node run in at least 10Hz. Time complexity is O(n), n is the amount of points in detection region. There is extra latency caused by camera. It takes approximately 0.1 seconds between obtaining the image and publishing the point cloud ROS message. The allows the car to run at a constant speed less than 1.5 m/s, without any deceleration setup. Otherwise, the avoidance is very likely to fail.
