@@ -1,9 +1,10 @@
+## Pure Pursuit Algorithm:
 
 The pure-pursuit algorithm is a geometric control method to maneuver a set of given waypoints in space.The Look ahead distance is the major parameter that decides the performance of the controller.The [paper](www.dtic.mil/get-tr-doc/pdf?AD=ADA599492) gives the theoritical base for the geometric based algorithm.
 
 
 
-##The implementation of the Pure pursuit algorithm,with Path planning.
+## The implementation of the Pure pursuit algorithm,with Path planning.
 
  1. The implementation waits until it receives a path in the form of a waypoint list from the HMI before moving.
 
