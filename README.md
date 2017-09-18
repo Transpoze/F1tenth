@@ -52,12 +52,11 @@ In general, obstacle detection and avoidance are achieved by analyzing point clo
 [Here is the detailed description on algorithm, useful notes and troubleshooting.](https://github.com/KTH-SML/SML_summerproject/tree/master/f1tenth_obstacle_avoidance)
 
 ## Control System:
-
-###Setting up Motors with Teensy
+### Setting up Motors with Teensy
 
 The car used in the project is [F1Tenth](http://f1tenth.org/car-assembly).The Traxxas ESC is the power electronic controller that takes in control signals from the [Teensy](https://www.pjrc.com/store/teensy32.html) and delivers power to the motors.The Elecronic Speed Controller is equipped with Low-Voltage protection, which needs to be disabled for the car to run.Check how to program the [ESC](https://traxxas.com/support/Programming-Your-Traxxas-Electronic-Speed-Control) to DISABLE the low voltage protection.The Teensy already programmed to provide PWM signals to the ESC.If it is required to alter the code inside Teensy,use [Arduino IDE](https://www.arduino.cc/en/Main/OldSoftwareReleases) along with the [software plugin](https://www.pjrc.com/teensy/td_download.html).The teensy needs to be connected to the Jetson via USB 2.0/3.0 port.
 
-###Pure-Pursuit Controller & PID controller:
+### Pure-Pursuit Controller & PID controller:
 
 The `control1` Package handles the controllers for the car.The Pure-pursuit controller Looks ahead a certain distance in meters and calculates a curvature to get to that point.The main parameter that decides the perforamance is the Look ahead distance.The controller takes in position and velocity commands from [odometry message](http://docs.ros.org/api/nav_msgs/html/msg/Odometry.html) `/odometry/filtered` and Waypoints from HMI in the form of a `/PoseArray` message.The output is `drive_parameters_topic` which is a custom message in the `slip_control_communications` package.The computed steering and velocity commands are sent to the `serial_transmitter.py` node, which maps the output for PWM signals.
 
