@@ -60,4 +60,4 @@ The car used in the project is [F1Tenth](http://f1tenth.org/car-assembly).The Tr
 
 The `control1` Package handles the controllers for the car.The Pure-pursuit controller Looks ahead a certain distance in meters and calculates a curvature to get to that point.The main parameter that decides the perforamance is the Look ahead distance.The controller takes in position and velocity commands from [odometry message](http://docs.ros.org/api/nav_msgs/html/msg/Odometry.html) `/odometry/filtered` and Waypoints from HMI in the form of a `/PoseArray` message.The output is `drive_parameters_topic` which is a custom message in the `slip_control_communications` package.The computed steering and velocity commands are sent to the `serial_transmitter.py` node, which maps the output for PWM signals.
 
-More information on the [working of Pure-pursuit controller].
+More information on the [working of Pure-pursuit controller](https://github.com/KTH-SML/SML_summerproject/blob/master/control1/Purepursuit.md).
