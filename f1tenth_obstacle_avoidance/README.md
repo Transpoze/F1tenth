@@ -101,7 +101,7 @@ log file: /home/ubuntu/.ros/log/fb2b5c5c-1dd6-11b2-8e95-00044b49198a/zed-zed_wra
 ```  
 **Solution:** First make sure ZED uses 3.0 USB interface. Restart Jetson usually helps. If doesn't, replug the camera (maybe try another USB port) and restart again. Cannot identify the cause. I guess it's just the software not robust enough. Also, there is no such bug report on the Internet.
 
-**Problem:** How to interpret pointcloud2 message as data is stored in uint8, 32 bytes for each point, how to segment x, y, z, rgb out?  
+**Problem:** How to interpret pointcloud2 message? As the x, y, z and rgb information for each point is stored in uint8, 32 bytes. How to decode the message and segment them out? 
 **Solution:** Check documentation of pointcloud2:  
 [http://docs.ros.org/kinetic/api/sensor_msgs/html/msg/PointCloud2.html](http://docs.ros.org/kinetic/api/sensor_msgs/html/msg/PointCloud2.html)  
 Source code of read_points:  
@@ -128,7 +128,7 @@ Using PointCloud2.read_points to read the message
 With current avoidance logic, several parameters should be carefully tuned, i.e. the distance to new waypoint, tolerance, detection region, vehicle speed, theta_0, etc. Theoretically, geometric constraints on these parameters could be calculated, as the motion of the vehicle is determined explicitly by pure pursuit motion planning. However, this hasn't been done yet. Instead they are tuned empirically.
 
 ## Future Work
-In our project, we use threshold approach for obstacle detection and a simple dynamic path planning algorithm for avoidance. It is straightforward, conservative while empirical. Future work should be exploring more adaptive detection and avoidance approach to handle more complex scenarios. An popular and promising idea is to merge the data from Lidar and depth camera to generate an occupancy grid map for local path planning. This is discussed in details hereafter.
+In our project, we use threshold approach for obstacle detection and a simple dynamic path planning algorithm for avoidance. It is straightforward, conservative while empirical. Future work should be exploring more adaptive detection and avoidance approach to handle more complex scenarios. With respective to detection (or in other words, "environment perception", "2-D mapping"), an popular and promising idea is to merge the data from Lidar and depth camera to generate an occupancy grid map for local path planning. This is discussed in details hereafter.
 
 First, 2-D Lidar (single laser beam) compensates for the deficiency of depth camera. The latter can only generate point cloud beyond 0.5m.
 
