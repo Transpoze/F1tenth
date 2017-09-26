@@ -126,3 +126,23 @@ Using PointCloud2.read_points to read the message
 **Problem:** The vehicle detects obstacle and turns, but it gets lost and goes wild never comming back to the original path.  
 **Solution:** This is because the vehicle doesn't reach the new waypoint, or the localization result is bad.
 With current avoidance logic, several parameters should be carefully tuned, i.e. the distance to new waypoint, tolerance, detection region, vehicle speed, theta_0, etc. Theoretically, geometric constraints on these parameters could be calculated, as the motion of the vehicle is determined explicitly by pure pursuit motion planning. However, this hasn't been done yet. Instead they are tuned empirically.
+
+## Future Work
+In our project, we use threshold approach for obstacle detection and a simple dynamic path planning algorithm for avoidance. It is straightforward, conservative while empirical. Future work should be exploring more adaptive detection and avoidance approach to handle more complex scenarios. An popular and promising idea is to merge the data from Lidar and depth camera to generate an occupancy grid map for local path planning. This is discussed in details hereafter.
+
+First, 2-D Lidar (single laser beam) compensates for the deficiency of depth camera. The latter can only generate point cloud beyond 0.5m.
+
+Second, 2-D Lidar cannot detect "overhanging obstacles" effectively. For instance, as for a table with 4 legs, Lidar cannot see the board above, but only the legs, which might cause miss detection. Depth camera solve this problem by providing point cloud reflecting the "real world".
+
+Third, in general, to build a valid occupancy grid map, there are three steps:  
+1. Use RANSAC algorithm on ZED camera 3-D point cloud for ground segmentation. This is a robust method for regression.  
+2. Compress the ZED 3-D point cloud onto the ground plane by putting a threshold on the heights.
+3. Transform compressed 2-D point cloud from ZED camera and data from Lidar into occupancy grid map respectively. Occupancy grid map is composed of grids in 3 status, i.e. occupied, free, unknow. Given the measurement data, each status corresponds to a weight, which can be calculated basing on Bayes rule. The map is essentially a discrete probability map representing the how likely a certain grid is occupied.
+4. Use Iterative Closest Point (ICP) algorithm to merge these two maps.
+
+### Reference
+\[1]Moghadam P, Wijesoma W S, Feng D J. Improving path planning and mapping based on stereo vision and lidar[C]//Control, Automation, Robotics and Vision, 2008. ICARCV 2008. 10th International Conference on. IEEE, 2008: 384-389.
+MLA  
+\[2]Young J, Simic M. LIDAR and monocular based overhanging obstacle detection[J]. Procedia Computer Science, 2015, 60: 1423-1432.  
+\[3]Smadja L, Ninot J, Gavrilovic T. Road extraction and environment interpretation from LiDAR sensors[J]. IAPRS, 2010, 38: 281-286.  
+\[4]Li Y. Stereo vision and Lidar based dynamic occupancy grid mapping: Application to scenes analysis for intelligent vehicles[D]. Université de Technologie de Belfort-Montbeliard, 2013.  
