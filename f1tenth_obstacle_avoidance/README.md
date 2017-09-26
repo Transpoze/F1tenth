@@ -69,7 +69,7 @@ criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 10, 0.05)
 attempts = 10
 flag_kmeans = cv2.KMEANS_PP_CENTERS
 # detection threshold, minimum number of points to be regarded as a valid obstacle
-point_count_min = 700/step**2  
+point_count_min = 700/step**2  # the threshold correlates to the sampling step
 # Initialize obstacle avoidance parameters
 theta_zero = 0.36  # in radius, helps to limit the turning angle to an appropriate small value when the vehicle sees an obstacle
 ```
@@ -113,13 +113,13 @@ Using PointCloud2.read_points to read the message
 
 **Problem:** The vehicle crashes on the obstacle. What can I do?  
 **Solution:**  
-1. Improve detection:
+1. Improve detection part:
    * Use the camera high-speed modes (HD720 @ 60 FPS or VGA @ 100 FPS), see [here](https://www.stereolabs.com/documentation/overview/video/introduction.html) how to change the camera resolution
    * Increase sampling step to have a smaller point cloud, yet the quality decreases
    * Reduce the detection region (usually width) also to have a small point cloud
    * Increase detection distance to detect obstacles earlier, but too large will make the car too sensitve
    * Check the enviroment, the camera may suffer from the illumination
-2. Improve avoidance:
+2. Improve dynamic path planning part:
    * Decrease *theta_0*, make the vehicle go further away from the obstacle
    * Decrease the distance from the vehicle to the new waypoint
    * Reduce the tolerance for reaching the new waypoint, but it should be higher than 0.8 meters otherwise the car will never reach the point
@@ -138,7 +138,7 @@ Second, 2-D Lidar cannot detect "overhanging obstacles" effectively. For instanc
 Third, in general, to build a valid occupancy grid map, there are four steps:  
 1. Use RANSAC algorithm on ZED camera 3-D point cloud for ground segmentation. This is a robust method for regression.  
 2. Compress the ZED 3-D point cloud onto the ground plane by putting a threshold on the heights.
-3. Transform compressed 2-D point cloud from ZED camera and data from Lidar into occupancy grid map respectively. Occupancy grid map is composed of grids in 3 status, i.e. occupied, free, unknow. Given the measurement data, each status corresponds to a weight, which can be calculated basing on Bayes rule. The map is essentially a discrete probability map representing the how likely a certain grid is occupied.
+3. Transform compressed 2-D point cloud from ZED camera and data from Lidar into occupancy grid map respectively. Occupancy grid map is composed of grids in 3 status, i.e. occupied, free, unknown. Given the measurement data, each status corresponds to a weight, which can be calculated basing on Bayes rule. The map is essentially a discrete probability map representing the how likely a certain grid is occupied.
 4. Use Iterative Closest Point (ICP) algorithm to merge these two maps.
 
 ### Reference
