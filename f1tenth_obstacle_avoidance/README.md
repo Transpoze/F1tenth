@@ -135,7 +135,7 @@ First, 2-D Lidar (single laser beam) compensates for the deficiency of depth cam
 
 Second, 2-D Lidar cannot detect "overhanging obstacles" effectively. For instance, as for a table with 4 legs, Lidar cannot see the board above, but only the legs, which might cause miss detection. Depth camera solve this problem by providing point cloud reflecting the "real world".
 
-Third, in general, to build a valid occupancy grid map, there are three steps:  
+Third, in general, to build a valid occupancy grid map, there are four steps:  
 1. Use RANSAC algorithm on ZED camera 3-D point cloud for ground segmentation. This is a robust method for regression.  
 2. Compress the ZED 3-D point cloud onto the ground plane by putting a threshold on the heights.
 3. Transform compressed 2-D point cloud from ZED camera and data from Lidar into occupancy grid map respectively. Occupancy grid map is composed of grids in 3 status, i.e. occupied, free, unknow. Given the measurement data, each status corresponds to a weight, which can be calculated basing on Bayes rule. The map is essentially a discrete probability map representing the how likely a certain grid is occupied.
