@@ -7,7 +7,7 @@ from sensor_msgs.msg import Imu
 from nav_msgs.msg import Odometry
 from geometry_msgs.msg import PoseArray
 import time
-#test
+
 def plot_pose(odom):
 	global counter
 	
