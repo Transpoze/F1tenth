@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package>
-  <name>HMI</name>
+  <name>hmi</name>
   <version>0.0.0</version>
   <description>The HMI package</description>
 
